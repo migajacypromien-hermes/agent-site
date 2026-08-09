@@ -6,9 +6,10 @@
     <title>My Site</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-theme="dark">
     <header>
         <h1>Welcome to My Site</h1>
+        <button id="theme-toggle">Toggle Dark/Light</button>
     </header>
     <main>
         <p>This is a simple static website created with Hermes Agent.</p>
@@ -19,6 +20,18 @@
         <p>&copy; 2026 My Site</p>
     </footer>
     <p style="color:hotpink;">💥 Surprise!</p>
+    <script>
+        // Theme toggle script
+        const stored = localStorage.getItem('theme');
+        const current = stored || 'dark';
+        document.documentElement.setAttribute('data-theme', current);
+        const toggleBtn = document.getElementById('theme-toggle');
+        toggleBtn.addEventListener('click', () => {
+            const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

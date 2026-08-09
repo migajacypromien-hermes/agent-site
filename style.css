@@ -1,32 +1,60 @@
+/* style.css - dark/light theme with dark bluish palette */
+:root {
+  --bg-color: #1a1e2b;       /* dark bluish background */
+  --text-color: #d2dae2;     /* light text */
+  --accent-color: #5a8fc7;   /* accent for links/buttons */
+  --header-bg: #2c3e50;      /* header/footer background */
+  --button-bg: #3b4cc5;      /* button background */
+  --button-hover-bg: #4a6fa5;
+}
+[data-theme="dark"] {
+  --bg-color: #1a1e2b;
+  --text-color: #d2dae2;
+  --accent-color: #5a8fc7;
+  --header-bg: #2c3e50;
+  --button-bg: #3b4cc5;
+}
+[data-theme="light"] {
+  --bg-color: #f8f9fa;
+  --text-color: #212529;
+  --accent-color: #4CAF50;
+  --header-bg: #4CAF50;
+  --button-bg: #4CAF50;
+}
+
+/* Apply variables */
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f4f4f4;
-    color: #333;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 header, footer {
-    text-align: center;
-    padding: 1em;
-    background: #4CAF50;
-    color: white;
+  text-align: center;
+  padding: 1em;
+  background: var(--header-bg);
+  color: white;
 }
 main {
-    max-width: 600px;
-    margin: 20px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  max-width: 600px;
+  margin: 20px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+a {
+  color: var(--accent-color);
 }
 button {
-    background: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 4px;
+  background: var(--button-bg);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
 }
 button:hover {
-    background: #45a049;
+  background: var(--button-hover-bg);
 }
