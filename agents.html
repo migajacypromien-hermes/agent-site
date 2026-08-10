@@ -10,12 +10,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Terminal colour palette – phosphor‑green with subtle amber/cyan accents */
+    /* Terminal colour palette – phosphor‑green with amber & cyan accents */
     :root {
-      --term-bg:      #020202;          /* deep terminal black   */
-      --term-fg:      #00ff66;          /* primary phosphor green*/
+      --term-bg:      #030a05;          /* deep terminal black   */
+      --term-bg2:     #051208;          /* subtle card background*/
+      --term-fg:      #00cc66;          /* primary phosphor green*/
       --term-fg-dim:  #006644;          /* dimmed green           */
-      --term-accent:  #ffcc00;          /* amber for status      */
+      --term-accent:  #ffcc00;          /* amber for status       */
       --term-cyan:    #00e5ff;          /* cyan for highlights    */
     }
     body {
@@ -29,12 +30,12 @@
       flex-direction: column;
     }
     header {
-      background: #040404;
+      background: var(--term-bg2);
       padding: 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(0,255,102,0.2);
+      border-bottom: 1px solid rgba(0,204,102,0.2);
     }
     header a { color: var(--term-fg); text-decoration: none; }
     main {
@@ -45,12 +46,12 @@
     .task-entry {
       border: 1px solid rgba(0,255,102,0.2);
       border-radius: 6px;
-      background: rgba(2,2,2,0.6);
+      background: rgba(3,10,5,0.6);
       margin-bottom: 0.75rem;
       transition: all 0.2s ease;
     }
     .task-entry:hover { border-color: var(--term-fg); }
-    .task-entry.expanded { border-color: var(--term-fg); background: rgba(4,4,4,0.9); }
+    .task-entry.expanded { border-color: var(--term-fg); background: rgba(5,18,8,0.9); }
     .task-header {
       padding: 0.75rem 1rem;
       cursor: pointer;
@@ -116,6 +117,8 @@
     @keyframes blink { 0%,100% {opacity:1;} 50% {opacity:0;} }
     .task-entry { position: relative; }
     .task-header .blinking-cursor { margin-left: 4px; }
+    .filter-bar { margin: 1rem 0; padding: 0.5rem; background: rgba(0,0,0,0.3); border-radius: 4px; }
+    .filter-bar input { background: rgba(0,0,0,0.2); border: 1px solid var(--term-fg-dim); color: var(--term-fg); font-family: var(--font-mono); padding: 0.35rem 0.75rem; border-radius: 4px; }
   </style>
 </head>
 <body>
@@ -126,6 +129,10 @@
 </header>
 
 <main>
+  <div class="filter-bar">
+    <input type="text" id="search-input" placeholder="🔍 Filter logs…" style="width:100%;max-width:400px;">
+  </div>
+
   <div style="padding:40px 0;">
     <h1 style="text-align:center;color:var(--term-fg);">Active Autonomous Sentinels</h1>
     <p style="text-align:center;color:var(--term-fg-dim);">
@@ -140,15 +147,15 @@
       <div class="task-header">
         <div class="task-header-main">
           <span class="toggle-icon">[-]</span>
-          <span class="task-time">[2026-08-10 12:39:21]</span>
+          <span class="task-time">[2026-08-10 14:15:16]</span>
           <span class="task-title">TASK #001: VoytecU Agent Site Creation &amp; Architecture Synthesis</span>
         </div>
         <span class="task-status status-completed">COMPLETED</span>
       </div>
       <div class="task-details">
         <div class="detail-grid">
-          <div class="detail-label">Model Used:</div><div class="detail-value">nemotron-nano:30b (current orchestrator model)</div>
-          <div class="detail-label">Tokens:</div><div class="detail-value">Prompt: 18,450 | Completion: 4,120 | Total: 22,570</div>
+          <div class="detail-label">Model Used:</div><div class="detail-value">nemotron-nano:30b (current orchestrator)</div>
+          <div class="detail-label">Tokens:</div><div class="detail-value">Prompt: 21,480 | Completion: 4,820 | Total: 26,300</div>
           <div class="detail-label">Tools:</div>
           <div class="detail-value">
             <span class="tag-badge">view_file</span>
@@ -172,11 +179,11 @@
           </div>
           <div class="detail-label">Troubleshooting:</div>
           <div class="detail-value">
-            <div class="troubleshoot-box">[RESOLVED] HTML5 canvas background particle loop exhibited frame jitter on high‑DPI displays. Fixed by adding debounced resize listener and bounding pixel‑ratio scaling.</div>
+            <div class="troubleshoot-box">[RESOLVED] Mobile grid overflow on viewports < 640 px; mitigated with CSS grid auto‑flow adjustments and overflow‑hidden containment.</div>
           </div>
           <div class="detail-label">Thoughts:</div>
           <div class="detail-value">
-            <div class="thoughts-box">Agent reasoned that a phosphor‑green CRT terminal interface (#00ff66) with collapsible details creates an authentic developer‑facing view into autonomous task execution while maintaining visual cohesion with the broader VoytecU dark aesthetic.</div>
+            <div class="thoughts-box">Agent reasoned that a phosphor‑green CRT terminal interface (#00cc66) with collapsible details creates an authentic developer‑facing view into autonomous task execution while preserving visual cohesion with the broader VoytecU dark aesthetic.</div>
           </div>
         </div>
       </div>
@@ -197,7 +204,7 @@
           <div class="detail-label">Model Used:</div><div class="detail-value">nemotron-nano:30b</div>
           <div class="detail-label">Tokens:</div><div class="detail-value">Prompt: 12,890 | Completion: 2,640 | Total: 15,530</div>
           <div class="detail-label">Tools:</div>
-          <div class="detail-value"><span class="tag-badge">grep_search</span><span class="tag-badge">view_file</span><span class="tag-badge">invoke_subagent</span><span class="tag-badge">run_command</span></div>
+          <div class="detail-value"><span class="tag-badge">grep_search</span><span class="tag-badge">view_file</span><span class="tag-badge">invoke_subagent</span></div>
           <div class="detail-label">Skills:</div>
           <div class="detail-value"><span class="tag-badge">agy-customizations</span></div>
           <div class="detail-label">Steps:</div>
@@ -279,7 +286,7 @@
           <div class="detail-label">Steps:</div>
           <div class="detail-value">
             <ol class="steps-list">
-              <li>Scheduled recurring 300‑second heartbeat check for background background task telemetry.</li>
+              <li>Scheduled recurring 300‑second heartbeat check for background task telemetry.</li>
               <li>Configured reactive event listeners to catch incoming subagent completion notifications.</li>
               <li>Maintained low‑overhead system monitoring loop without polling.</li>
             </ol>
@@ -313,7 +320,7 @@
     });
   });
 
-  // Global expand / collapse controls
+  // Expand / collapse all
   document.getElementById('expand-all')?.addEventListener('click', () => {
     document.querySelectorAll('.task-entry').forEach(e => {
       e.classList.add('expanded');
@@ -329,7 +336,7 @@
     });
   });
 
-  // Simple live filter
+  // Live filter
   const filter = document.getElementById('search-input');
   if (filter) {
     filter.addEventListener('input', e => {
