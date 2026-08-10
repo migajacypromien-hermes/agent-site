@@ -3,27 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VoytecU – Autonomous AI Agents</title>
+    <title>VoytecU — Autonomous AI Agents</title>
+    <meta name="description" content="VoytecU introduces next-generation autonomous AI agents that execute complex commands and workflows seamlessly on your behalf.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body data-theme="dark">
-    <header>
-        <h1>VoytecU</h1>
-        <button id="learn-more">Enter</button>
-    </header>
-    <main>
-        <p class="mystery">
-            In a quiet corner of the internet, autonomous agents await your command.
-            Whisper a request, and they will materialize, compute, and act—without you lifting a finger.
-        </p>
-    </main>
-    <footer>
-        <p>&copy; 2026 VoytecU</p>
-    </footer>
-    <script>
-        document.getElementById('learn-more').onclick = function () {
-            window.location.href = 'agents.html';
-        };
-    </script>
+
+    <!-- Interactive Glowing Grid Canvas -->
+    <canvas id="bg-canvas"></canvas>
+    
+    <!-- Subtle Ambient Glow Orbs -->
+    <div class="ambient-glow orb-1"></div>
+    <div class="ambient-glow orb-2"></div>
+    <div class="ambient-glow orb-3"></div>
+
+    <div class="page-container">
+        <!-- Navigation Header -->
+        <header class="site-header">
+            <div class="logo-container">
+                <span class="logo-icon">◈</span>
+                <span class="logo-text">Voytec<span class="highlight">U</span></span>
+                <span class="badge">AUTONOMOUS OS</span>
+            </div>
+            
+            <nav class="nav-links">
+                <div class="status-pill">
+                    <span class="status-dot"></span>
+                    <span class="status-text">SYSTEM OPERATIONAL</span>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Main Landing Hero Section -->
+        <main>
+            <section class="hero">
+                <div class="hero-tag animate-fade-in">
+                    <span class="tag-symbol">⚡</span> Next-Gen Command Execution Framework
+                </div>
+
+                <h1 class="hero-title animate-fade-in delay-1">
+                    Autonomous AI Agents <br>
+                    <span class="text-gradient">Executing Commands</span> On Your Behalf
+                </h1>
+
+                <p class="hero-subtitle mystery animate-fade-in delay-2">
+                    In the quiet shadows of your infrastructure, VoytecU agents listen, reason, and act. 
+                    Whisper a single high-level objective, and autonomous sentinels interface with terminals, 
+                    run complex pipelines, and deliver outcomes—without manual intervention.
+                </p>
+
+                <!-- Action Button linking to agents.html -->
+                <div class="cta-container animate-fade-in delay-3">
+                    <a href="agents.html" class="enter-btn" id="enter-link">
+                        <span class="btn-glow"></span>
+                        <span class="btn-text">ENTER AGENT SPHERE</span>
+                        <span class="btn-icon">→</span>
+                    </a>
+                    <span class="cta-subtext">Access future agent portal (agents.html)</span>
+                </div>
+            </section>
+
+            <!-- Interactive Live Terminal Command Simulation -->
+            <section class="terminal-section animate-fade-in delay-4">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                        <div class="terminal-title">voytecu-daemon // agent-node-01</div>
+                        <div class="terminal-badge">LIVE DEMO</div>
+                    </div>
+                    <div class="terminal-body" id="terminal-output">
+                        <div class="terminal-line"><span class="t-prompt">voytecu@core:~$</span> <span class="t-cmd">init --autonomous-mode</span></div>
+                        <div class="terminal-line t-info">[SYSTEM] Initializing Agent Engine v2.6.0...</div>
+                        <div class="terminal-line t-success">[READY] 3 Autonomous Sentinels standby for user instructions.</div>
+                    </div>
+                    <div class="terminal-input-bar">
+                        <span class="t-prompt">user@voytecu:~$</span>
+                        <input type="text" id="terminal-input" placeholder="Type a command e.g. 'deploy backend' or press Enter..." autocomplete="off">
+                        <button id="send-cmd-btn" aria-label="Execute Command">Run</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Feature Showcase Grid -->
+            <section class="features-grid">
+                <div class="feature-card">
+                    <div class="card-icon">⚡</div>
+                    <h3>Direct Command Execution</h3>
+                    <p>Agents interact directly with shell environments, APIs, and background processes to fulfill complex multi-step instructions.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="card-icon">🛡️</div>
+                    <h3>Self-Healing Sentinels</h3>
+                    <p>Proactive monitoring background routines detect anomalies, trace errors in real-time, and execute auto-repair scripts.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="card-icon">🔮</div>
+                    <h3>Zero-Friction Intent</h3>
+                    <p>Transform vague user requirements into structured terminal operations with complete safety and audit trails.</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="site-footer">
+            <p>&copy; 2026 VoytecU. All autonomous operations reserved.</p>
+            <div class="footer-meta">
+                <span>ENCRYPTED PROTOCOL</span> • <span>LATENCY: 1.2ms</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>

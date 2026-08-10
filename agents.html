@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoytecU — Agent Control Portal</title>
+    <meta name="description" content="VoytecU Autonomous AI Agent Control Portal & Sphere.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .portal-hero {
+            padding: 80px 0 40px;
+            text-align: center;
+        }
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+        .agent-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+            padding: 28px;
+            backdrop-filter: blur(12px);
+            position: relative;
+        }
+        .agent-status {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--accent-cyan);
+            background: rgba(0, 242, 254, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 0.88rem;
+            transition: color 0.2s ease;
+        }
+        .back-link:hover {
+            color: var(--accent-cyan);
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <canvas id="bg-canvas"></canvas>
+    <div class="ambient-glow orb-1"></div>
+    <div class="ambient-glow orb-2"></div>
+
+    <div class="page-container">
+        <header class="site-header">
+            <div class="logo-container">
+                <a href="index.html" class="back-link">← Back to Overview</a>
+            </div>
+            <div class="logo-container">
+                <span class="logo-icon">◈</span>
+                <span class="logo-text">Voytec<span class="highlight">U</span></span>
+                <span class="badge">AGENT SPHERE</span>
+            </div>
+        </header>
+
+        <main>
+            <section class="portal-hero">
+                <div class="hero-tag">
+                    <span class="tag-symbol">🔒</span> Authorized Command Center
+                </div>
+                <h1 class="hero-title">
+                    Active <span class="text-gradient">Autonomous Sentinels</span>
+                </h1>
+                <p class="mystery">
+                    Welcome to the VoytecU Agent Portal. The autonomous agents listed below are active, listening to user commands, and continuously executing tasks in background runtimes.
+                </p>
+            </section>
+
+            <section class="agent-grid">
+                <div class="agent-card">
+                    <div class="agent-status">● ACTIVE — RUNNING TASKS</div>
+                    <h3>Agent Alpha (CLI Executor)</h3>
+                    <p>Monitors system queues, parses shell directives, and executes terminal commands asynchronously.</p>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-status">● ACTIVE — LISTENING</div>
+                    <h3>Agent Beta (Codebase Architect)</h3>
+                    <p>Performs code inspection, detects lint/build breakages, and applies multi-file refactors auto-magically.</p>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-status">● ACTIVE — MONITORED</div>
+                    <h3>Agent Gamma (Security Sentinel)</h3>
+                    <p>Continuous background process auditor ensuring zero unauthorized access or unintended mutations.</p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <p>&copy; 2026 VoytecU. Agent control plane active.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
