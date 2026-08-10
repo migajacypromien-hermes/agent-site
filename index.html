@@ -3,35 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Site</title>
+    <title>VoytecU – Autonomous AI Agents</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body data-theme="dark">
     <header>
-        <h1>Welcome to My Site</h1>
-        <button id="theme-toggle">Toggle Dark/Light</button>
+        <h1>VoytecU</h1>
+        <button id="learn-more">Enter</button>
     </header>
     <main>
-        <p>This is a simple static website created with Hermes Agent.</p>
-        <button id="click-me">Click me</button>
-        <div id="output"></div>
+        <p class="mystery">
+            In a quiet corner of the internet, autonomous agents await your command.
+            Whisper a request, and they will materialize, compute, and act—without you lifting a finger.
+        </p>
     </main>
     <footer>
-        <p>&copy; 2026 My Site</p>
+        <p>&copy; 2026 VoytecU</p>
     </footer>
-    <p style="color:hotpink;">💥 Surprise!</p>
     <script>
-        // Theme toggle script
-        const stored = localStorage.getItem('theme');
-        const current = stored || 'dark';
-        document.documentElement.setAttribute('data-theme', current);
-        const toggleBtn = document.getElementById('theme-toggle');
-        toggleBtn.addEventListener('click', () => {
-            const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        });
+        document.getElementById('learn-more').onclick = function () {
+            window.location.href = 'agents.html';
+        };
     </script>
-    <script src="script.js"></script>
 </body>
 </html>
