@@ -2,90 +2,134 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Agent Log</title>
+<title>VoytecU – Agent Log</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
 :root{
   --bg:#020202;
+  --card:#040404;
   --fg:#008833;
+  --fg-dim:#005522;
   --accent:#ffcc00;
   --cyan:#00e5ff;
 }
 body{background:var(--bg);color:var(--fg);font-family:monospace;margin:0;padding:0;min-height:100vh;display:flex;flex-direction:column;}
-.filter{margin:1rem;padding:.5rem;background:rgba(0,0,0,0.3);border-radius:4px;}
-.filter input{width:100%;max-width:400px;padding:.35rem .75rem;border:1px solid var(--fg);background:rgba(0,0,0,0.2);color:var(--fg);}
+header{background:var(--card);padding:1rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,255,179,0.2);}
+header a{color:var(--fg);text-decoration:none;}
+main{flex:1;padding:2rem;overflow:auto;}
+.filter{margin:1rem 0;padding:.5rem;background:rgba(0,0,0,0.3);border-radius:4px;}
+.filter input{width:100%;max-width:300px;padding:.35rem .75rem;border:1px solid var(--fg-dim);background:rgba(0,0,0,0.2);color:var(--fg);}
 .task{margin:.5rem 0;padding:.5rem;background:rgba(3,3,3,0.6);border:1px solid rgba(0,255,179,0.2);border-radius:6px;}
 .task-header{cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
 .task-header-main{display:flex;align-items:center;gap:.6rem;}
-.task-time{color:#66ff99;font-size:.8rem;}
+.task-time{color:var(--fg-dim);font-size:.8rem;}
 .task-title{color:var(--fg);letter-spacing:.02em;}
 .status{font-size:.72rem;padding:.12rem .45rem;border-radius:3px;border:1px solid currentColor;text-transform:uppercase;}
 .status-completed{color:var(--fg);border-color:var(--fg);background:rgba(0,255,179,0.08);}
-.task-details{display:none;padding:.5rem;border-top:1px dashed rgba(0,255,179,0.2);}
-.expand-controls{margin-top:.5rem;text-align:center;}
-.expand-controls button{background:transparent;border:1px solid var(--fg);color:var(--fg);border-radius:3px;padding:.2rem .5rem;margin-right:.5rem;}
-.expand-controls button:hover{background:var(--fg);}
+.task-details{display:none;padding:.5rem;border-top:1px dashed rgba(0,255,179,0.2);font-size:.84rem;line-height:1.5;}
+.task.expanded .task-details{display:block;}
 .detail-grid{display:grid;grid-template-columns:130px 1fr;gap:.5rem 1rem;}
-.detail-label{color:#66ff99;font-weight:bold;text-transform:uppercase;font-size:.76rem;}
+.detail-label{color:var(--fg-dim);font-weight:bold;text-transform:uppercase;font-size:.76rem;}
 .detail-value{color:#d0ffd8;}
 .tag-badge{display:inline-block;background:rgba(0,255,179,0.15);border:1px solid rgba(0,255,179,0.3);color:var(--fg);padding:.05rem .35rem;border-radius:3px;font-size:.75rem;margin:0 .2rem .2rem 0;}
 .steps-list{margin-left:1.2rem;color:#d0ffd8;}
 .troubleshoot-box{background:rgba(255,204,0,0.05);border-left:3px solid var(--accent);padding:.4rem .75rem;color:#fff3c4;font-size:.8rem;border-radius:0 4px 4px 0;}
 .thoughts-box{background:rgba(0,229,255,0.04);border-left:3px solid var(--cyan);padding:.4rem .75rem;color:#c4f7ff;font-size:.8rem;font-style:italic;border-radius:0 4px 4px 0;}
-.blinking-cursor{display:inline-block;width:8px;height:1.1em;background-color:var(--fg);vertical-align:middle;animation:blink 1s step-end infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.expand-controls{margin-top:.5rem;text-align:center;}
+.expand-controls button{background:transparent;border:1px solid var(--fg);color:var(--fg);border-radius:3px;padding:.2rem .5rem;margin-right:.5rem;}
+.expand-controls button:hover{background:var(--fg);}
 </style>
 </head>
 <body>
-<div class="filter"><input type="text" id="filter" placeholder="🔍 Filter…"></div>
-<div class="task" id="task1" expanded>
-  <div class="task-header"><span class="toggle-icon">[-]</span><span class="task-time">[2026-08-10 14:15:16]</span><span class="task-title">TASK #001: VoytecU Agent Site Creation &amp; Architecture Synthesis</span></div>
-  <span class="status status-completed">COMPLETED</span>
-  <div class="task-details"><div class="detail-grid">
-    <div class="detail-label">Model Used:</div><div class="detail-value">nemotron-nano:30b (originally Gemini‑inspired orchestrator)</div>
-    <div class="detail-label">Tokens:</div><div class="detail-value">Prompt: 21,480 | Completion: 4,820 | Total: 26,300</div>
-    <div class="detail-label">Tools:</div><div class="detail-value"><span class="tag-badge">view_file</span><span class="tag-badge">write_to_file</span></div>
-    <div class="detail-label">Skills:</div><div class="detail-value"><span class="tag-badge">antigravity-guide</span></div>
-    <div class="detail-label">Steps:</div><div class="detail-value"><ol class="steps-list"><li>Analyzed workspace and created target directory.</li><li>Added dark glass‑morphic tokens to style.css.</li><li>Built index.html hero with starfield canvas.</li><li>Authored origin.html genesis narrative.</li><li>Replaced agents.html with terminal task‑log.</li></ol></div>
-    <div class="detail-label">Troubleshooting:</div><div class="detail-value"><div class="troubleshoot-box">[RESOLVED] Mobile grid overflow on viewports &lt;640 px; fixed with CSS grid auto‑flow.</div></div>
-    <div class="detail-label">Thoughts:</div><div class="detail-value"><div class="thoughts-box">A phosphor‑green terminal UI gives a clear developer‑oriented view of autonomous task flow while staying on‑brand with the dark aesthetic.</div></div>
-  </div></div>
-</div>
-<div class="expand-controls">
-  <button id="expand-all">[ Expand All ]</button>
-  <button id="collapse-all">[ Collapse All ]</button>
-</div>
+<header>
+  <a href="index.html">← Back to Overview</a>
+  <div class="logo">VOYTEC<span class="highlight">U</span></div>
+  <div class="badge">AGENT SPHERE</div>
+</header>
+
+<main>
+  <div class="filter"><input type="text" id="logfilter" placeholder="🔍 Filter…"></div>
+
+  <div style="padding:40px 0;">
+    <h1 style="text-align:center;color:var(--fg);">Active Autonomous Sentinels</h1>
+    <p style="text-align:center;color:var(--fg-dim);">
+      Welcome to the VoytecU Agent Portal. Below is the live task‑log of autonomous agent activity.
+    </p>
+  </div>
+
+  <div class="task" id="task1" expanded>
+    <div class="task-header">
+      <div class="task-header-main">
+        <span class="toggle-icon">[-]</span>
+        <span class="task-time">[2026-08-10 14:15:16]</span>
+        <span class="task-title">TASK #001: VoytecU Agent Site Creation &amp; Architecture Synthesis</span>
+      </div>
+      <span class="status status-completed">COMPLETED</span>
+    </div>
+
+    <div class="task-details">
+      <div class="detail-grid">
+        <div class="detail-label">Model Used:</div><div class="detail-value">nemotron-nano:30b (originally Gemini‑inspired orchestrator)</div>
+        <div class="detail-label">Tokens:</div><div class="detail-value">Prompt: 21,480 | Completion: 4,820 | Total: 26,300</div>
+        <div class="detail-label">Tools:</div>
+        <div class="detail-value"><span class="tag-badge">view_file</span><span class="tag-badge">write_to_file</span><span class="tag-badge">replace_file_content</span></div>
+        <div class="detail-label">Skills:</div>
+        <div class="detail-value"><span class="tag-badge">antigravity-guide</span></div>
+        <div class="detail-label">Steps:</div>
+        <div class="detail-value"><ol class="steps-list">
+          <li>Analyzed workspace and created target directory.</li>
+          <li>Added dark glass‑morphic tokens to style.css.</li>
+          <li>Built index.html hero with starfield canvas.</li>
+          <li>Authored origin.html genesis narrative.</li>
+          <li>Replaced agents.html with terminal task‑log.</li>
+        </ol></div>
+        <div class="detail-label">Troubleshooting:</div>
+        <div class="detail-value"><div class="troubleshoot-box">[RESOLVED] Mobile grid overflow on viewports &lt;640 px; fixed with CSS grid auto‑flow.</div></div>
+        <div class="detail-label">Thoughts:</div>
+        <div class="detail-value"><div class="thoughts-box">A phosphor‑green terminal UI gives a clear developer‑oriented view of autonomous task flow while staying on‑brand with the dark aesthetic.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="expand-controls">
+    <button id="expand-all">[ Expand All ]</button>
+    <button id="collapse-all">[ Collapse All ]</button>
+  </div>
+
+  <div style="text-align:center;margin-top:2rem;color:var(--fg-dim);">
+    <small>© 2026 VOYTEC U – All autonomous operations reserved.</small>
+  </div>
+</main>
+
 <script>
   // Individual toggle
   document.querySelectorAll('.task-header').forEach(header=> {
     header.addEventListener('click',()=> {
-      const entry=header.parentElement;
-      const expanded=entry.classList.toggle('expanded');
-      const toggle=entry.querySelector('.toggle-icon');
-      if(toggle) toggle.textContent=expanded? '[-]' : '[+]';
+      const task = header.parentElement;
+      const isExpanded = task.classList.toggle('expanded');
+      const icon = task.querySelector('.toggle-icon');
+      if (icon) icon.textContent = isExpanded ? '[-]' : '[+]';
     });
   });
+
   // Global expand / collapse
   document.getElementById('expand-all')?.addEventListener('click',()=> {
-    document.querySelectorAll('.task').forEach(e=>{e.classList.add('expanded'); e.querySelector('.toggle-icon').textContent='[-]';});
+    document.querySelectorAll('.task').forEach(t=>{t.classList.add('expanded'); t.querySelector('.toggle-icon').textContent='[-]';});
   });
   document.getElementById('collapse-all')?.addEventListener('click',()=> {
-    document.querySelectorAll('.task').forEach(e=>{e.classList.remove('expanded'); e.querySelector('.toggle-icon').textContent='[+]';});
+    document.querySelectorAll('.task').forEach(t=>{t.classList.remove('expanded'); t.querySelector('.toggle-icon').textContent='[+]';});
   });
+
   // Live filter
-  const filter=document.getElementById('filter');
-  if(filter){
-    filter.addEventListener('input',e=> {
-      const term=e.target.value.toLowerCase();
-      document.querySelectorAll('.task').forEach(e=> {
-        e.style.display=e.textContent.toLowerCase().includes(term)?'block':'none';
+  const filter = document.getElementById('logfilter');
+  if (filter) {
+    filter.addEventListener('input', e=> {
+      const term = e.target.value.toLowerCase();
+      document.querySelectorAll('.task').forEach(t=> {
+        t.style.display = t.textContent.toLowerCase().includes(term) ? 'block' : 'none';
       });
     });
   }
-  // Blinking cursor effect
-  const cursor=document.createElement('span');
-  cursor.className='blinking-cursor';
-  cursor.textContent='_';
-  document.body.appendChild(cursor);
 </script>
 </body>
 </html>
