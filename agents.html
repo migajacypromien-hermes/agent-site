@@ -17,8 +17,10 @@ body{background:var(--bg);color:var(--fg);font-family:monospace;margin:0;padding
 header{background:var(--card);padding:1rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,255,179,0.2);}
 header a{color:var(--fg);text-decoration:none;}
 main{flex:1;padding:2rem;overflow:auto;}
-.filter{margin:1rem 0;padding:.5rem;background:rgba(0,0,0,0.3);border-radius:4px;}
-.filter input{width:100%;max-width:300px;padding:.35rem .75rem;border:1px solid var(--fg-dim);background:rgba(0,0,0,0.2);color:var(--fg);}
+.filter{margin:1rem 0;padding:.6rem;background:rgba(0,0,0,0.3);border-radius:4px;}
+.filter input{width:100%;max-width:420px;box-sizing:border-box;padding:.35rem .75rem;border:1px solid var(--fg-dim);background:rgba(0,0,0,0.2);color:var(--fg);font:inherit;}
+.filter-meta{margin-top:.45rem;color:var(--fg-dim);font-size:.75rem;min-height:1em;}
+.filter-meta.no-results{color:var(--accent);}
 .task{margin:.5rem 0;padding:.5rem;background:rgba(3,3,3,0.6);border:1px solid rgba(0,255,179,0.2);border-radius:6px;}
 .task-header{cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
 .task-header-main{display:flex;align-items:center;gap:.6rem;}
@@ -48,7 +50,10 @@ main{flex:1;padding:2rem;overflow:auto;}
 </header>
 
 <main>
-  <div class="filter"><input type="text" id="logfilter" placeholder="🔍 Filter…"></div>
+  <div class="filter">
+    <input type="text" id="logfilter" placeholder="Filter agent tasks…" aria-label="Filter agent tasks">
+    <div class="filter-meta" id="filter-meta" aria-live="polite"></div>
+  </div>
 
   <div style="padding:40px 0;">
     <h1 style="text-align:center;color:var(--fg);">Active Autonomous Sentinels</h1>
@@ -155,16 +160,35 @@ main{flex:1;padding:2rem;overflow:auto;}
     document.querySelectorAll('.task').forEach(t=>{t.classList.remove('expanded'); t.querySelector('.toggle-icon').textContent='[+]';});
   });
 
-  // Live filter
+  // Live task filter
   const filter = document.getElementById('logfilter');
-  if (filter) {
-    filter.addEventListener('input', e=> {
-      const term = e.target.value.toLowerCase();
-      document.querySelectorAll('.task').forEach(t=> {
-        t.style.display = t.textContent.toLowerCase().includes(term) ? 'block' : 'none';
-      });
+  const filterMeta = document.getElementById('filter-meta');
+  const tasks = Array.from(document.querySelectorAll('.task'));
+
+  function updateTaskFilter() {
+    const term = filter.value.trim().toLowerCase();
+    let visibleCount = 0;
+
+    tasks.forEach(task => {
+      const matches = !term || task.textContent.toLowerCase().includes(term);
+      task.style.display = matches ? '' : 'none';
+      if (matches) visibleCount++;
     });
+
+    if (!term) {
+      filterMeta.textContent = `${tasks.length} tasks`;
+      filterMeta.classList.remove('no-results');
+    } else if (visibleCount > 0) {
+      filterMeta.textContent = `${visibleCount} of ${tasks.length} tasks match “${filter.value.trim()}”`;
+      filterMeta.classList.remove('no-results');
+    } else {
+      filterMeta.textContent = `No tasks match “${filter.value.trim()}”`;
+      filterMeta.classList.add('no-results');
+    }
   }
+
+  filter?.addEventListener('input', updateTaskFilter);
+  updateTaskFilter();
 </script>
 </body>
 </html>
