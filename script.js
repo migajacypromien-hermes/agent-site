@@ -109,18 +109,18 @@ function initTerminalSimulation() {
     let actionIndex = 0;
 
     const commandHelp = [
-        'agent help              Show all available agent commands',
-        'agent model             Show the active inference model',
-        'agent context           Show context window usage',
-        'agent status            Show agent health and runtime status',
-        'agent quota             Show remaining execution quota',
-        'agent tasks             Show active autonomous tasks',
-        'agent tools             List tools available to the agent',
-        'agent memory            Show demo memory state',
-        'agent ping              Measure simulated agent latency',
-        'agent version           Show agent runtime version',
-        'agent clear             Clear the terminal output',
-        'agent reset             Reset the demo agent state'
+        'agent help     | Show all available agent commands',
+        'agent model    | Show the active inference model',
+        'agent context  | Show context window usage',
+        'agent status   | Show agent health and runtime status',
+        'agent quota    | Show remaining execution quota',
+        'agent tasks    | Show active autonomous tasks',
+        'agent tools    | List tools available to the agent',
+        'agent memory   | Show demo memory state',
+        'agent ping     | Measure simulated agent latency',
+        'agent version  | Show agent runtime version',
+        'agent clear    | Clear the terminal output',
+        'agent reset    | Reset the demo agent state'
     ].join('\n');
 
     function handleCommand(userText) {
@@ -156,7 +156,6 @@ function initTerminalSimulation() {
         const normalized = rawCommand.toLowerCase().replace(/\s+/g, ' ').trim();
         const parts = normalized.split(' ');
 
-        // Both "agent help" and "agent --help" are supported.
         if (parts[0] === 'agent') {
             const subcommand = (parts[1] || 'help').replace(/^--/, '');
 
@@ -195,7 +194,6 @@ function initTerminalSimulation() {
             return `[CLI] Type "agent help" to inspect the autonomous agent command interface.`;
         }
 
-        // Keep the original free-form terminal demo behavior.
         return `[VOYTECU AGENT] Received intent: "${rawCommand}"\n[AGENT EXEC] Synthesizing execution plan & dispatching command runner...\n[SUCCESS] Action completed on remote agent worker cleanly.`;
     }
 
