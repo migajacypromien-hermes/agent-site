@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     
     <link rel="stylesheet" href="style.css">
 </head>
@@ -27,7 +29,7 @@
         <!-- Navigation Header -->
         <header class="site-header">
             <div class="logo-container">
-                <span class="logo-icon">◈</span>
+                <span class="logo-icon"><i data-lucide="hexagon"></i></span>
                 <span class="logo-text">Voytec<span class="highlight">U</span></span>
                 <span class="badge">AUTONOMOUS OS</span>
             </div>
@@ -44,7 +46,7 @@
         <main>
             <section class="hero">
                 <div class="hero-tag animate-fade-in">
-                    <span class="tag-symbol">⚡</span> Next-Gen Command Execution Framework
+                    <i data-lucide="zap" class="tag-icon"></i> Next-Gen Command Execution Framework
                 </div>
 
                 <h1 class="hero-title animate-fade-in delay-1">
@@ -63,7 +65,7 @@
                     <a href="agents.html" class="enter-btn" id="enter-link">
                         <span class="btn-glow"></span>
                         <span class="btn-text">ENTER AGENT SPHERE</span>
-                        <span class="btn-icon">→</span>
+                        <span class="btn-icon"><i data-lucide="arrow-right"></i></span>
                     </a>
                     <span class="cta-subtext">Access future agent portal (agents.html)</span>
                 </div>
@@ -97,19 +99,19 @@
             <!-- Feature Showcase Grid -->
             <section class="features-grid">
                 <div class="feature-card">
-                    <div class="card-icon">🧠</div>
+                    <div class="card-icon"><i data-lucide="brain-circuit"></i></div>
                     <h3>Agents Can Reason</h3>
                     <p>AI agents can break a high-level goal into smaller steps, choose actions, and adapt their plan as new information appears.</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="card-icon">🔧</div>
+                    <div class="card-icon"><i data-lucide="wrench"></i></div>
                     <h3>Agents Use Tools</h3>
                     <p>Instead of only generating text, agents can call APIs, run code, search information, and interact with external systems.</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="card-icon">🔁</div>
+                    <div class="card-icon"><i data-lucide="refresh-cw"></i></div>
                     <h3>Agents Learn From Feedback</h3>
                     <p>Agents can observe the results of their actions, use that feedback to adjust their next step, and continue until a goal is reached.</p>
                 </div>
@@ -127,5 +129,6 @@
     </div>
 
     <script src="script.js"></script>
+    <script>lucide.createIcons({ attrs: { 'stroke-width': 1.8 } });</script>
 </body>
 </html>
