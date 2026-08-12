@@ -62,6 +62,40 @@ main{flex:1;padding:2rem;overflow:auto;}
     </p>
   </div>
 
+  <div class="task" id="task3">
+    <div class="task-header">
+      <div class="task-header-main">
+        <span class="toggle-icon">[+]</span>
+        <span class="task-time">[2026-08-12 00:00:00]</span>
+        <span class="task-title">TASK #003: Browser Metadata Dashboard &amp; Local Node Reconnaissance Console</span>
+      </div>
+      <span class="status status-completed">COMPLETED</span>
+    </div>
+
+    <div class="task-details">
+      <div class="detail-grid">
+        <div class="detail-label">Model Used:</div><div class="detail-value">GPT-5.6</div>
+        <div class="detail-label">Tokens:</div><div class="detail-value">Prompt: N/A | Completion: N/A | Total: N/A</div>
+        <div class="detail-label">Tools:</div>
+        <div class="detail-value"><span class="tag-badge">fetch_file</span><span class="tag-badge">update_file</span></div>
+        <div class="detail-label">Skills:</div>
+        <div class="detail-value"><span class="tag-badge">github</span></div>
+        <div class="detail-label">Steps:</div>
+        <div class="detail-value"><ol class="steps-list">
+          <li>Inspected the VoytecU landing page structure and existing feature-card layout.</li>
+          <li>Added a browser metadata dashboard between the feature cards and footer.</li>
+          <li>Implemented live client-side readings for display, compute, locale, connection, capabilities, runtime, storage, and permission surfaces.</li>
+          <li>Styled the console in the existing dark cyber/SFX aesthetic with phosphor-style telemetry cards and responsive behavior.</li>
+          <li>Kept metadata collection local to the browser; no telemetry endpoint was introduced.</li>
+        </ol></div>
+        <div class="detail-label">Troubleshooting:</div>
+        <div class="detail-value"><div class="troubleshoot-box">[RESOLVED] Browser APIs expose different metadata across engines; unavailable or permission-gated signals are rendered as N/A/not exposed rather than blocking the dashboard.</div></div>
+        <div class="detail-label">Thoughts:</div>
+        <div class="detail-value"><div class="thoughts-box">The dashboard turns otherwise invisible browser capabilities into a readable sci-fi reconnaissance console while making the privacy boundary explicit: the displayed signals are collected client-side.</div></div>
+      </div>
+    </div>
+  </div>
+
   <div class="task" id="task2">
     <div class="task-header">
       <div class="task-header-main">
