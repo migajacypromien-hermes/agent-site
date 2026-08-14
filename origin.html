@@ -1,147 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Origin & Technical Manifest — VoytecU</title>
-  <meta name="description" content="The story behind VoytecU: a minimalist, enigmatic landing page for autonomous AI agents built via AGY CLI.">
-  <link rel="stylesheet" href="style.css">
+<meta charset='UTF-8'>
+<title>Origin & Technical Manifest — VoytecU</title>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<style>
+:root{
+  --bg:#020202;
+  --fg:#008833;
+  --accent:#ffcc00;
+  --card:#040404;
+}
+body{background:var(--bg);color:var(--fg);font-family:system-ui,sans-serif;margin:0;padding:0;display:flex;flex-direction:column;min-height:100vh;}
+.container{max-width:900px;margin:0 auto;padding:2rem;}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;}
+.logo{font-size:2rem;font-weight:700;color:var(--accent);}
+nav a{color:var(--fg);margin:.5rem;text-decoration:none;}
+nav a.active{border-bottom:2px solid var(--accent);}
+.tagline{text-transform:uppercase;font-size:.9rem;letter-spacing:.05em;color:var(--fg-dim);}
+.hero-title{font-size:2rem;margin:1rem 0;color:var(--accent);}
+.enigma-quote{font-style:italic;color:var(--fg-dim);margin:1rem 0;}
+.prose{line-height:1.6;color:var(--fg);}
+.tech-note{margin:2rem 0 1rem;font-size:1.1rem;color:var(--accent);}
+.code-block{background:rgba(0,0,0,0.6);border-left:4px solid var(--accent);padding:1rem;font-family:monospace;font-size:.9rem;}
+.code-header{display:flex;align-items:center;}
+.code-dot{width:8px;height:8px;border-radius:50%;margin:0 4px;}
+.code-dot.red{background:#e63946;}
+.code-dot.yellow{background:#f4d35e;}
+.code-dot.green{background:#2a9d8f;}
+.code-language{margin-left:8px;color:var(--fg-dim);}
+.code-content{margin-top:.5rem;}
+.action-buttons{margin-top:2rem;display:flex;gap:1rem;}
+.btn{padding:.5rem 1rem;border-radius:4px;cursor:pointer;font-weight:500;}
+.btn-secondary{background:rgba(255,255,255,.05);border:1px solid var(--fg-dim);color:var(--fg);}
+.btn-primary{background:var(--accent);color:#fff;border:none;}
+.footer-content{margin-top:3rem;font-size:.9rem;color:var(--fg-dim);text-align:center;}
+.footer-discreet-link{color:var(--fg-dim);text-decoration:none;}
+.ambient-glow{position:absolute;width:150px;height:150px;background:radial-gradient(circle,rgba(0,255,255,.05) 0%,transparent 70%);}
+.ambient-glow.gl0w-top-left{top:8%;left:8%;}
+.ambient-glow.gl0w-bottom-right{bottom:8%;right:8%;}
+</style>
 </head>
 <body>
+<div class='container'>
+  <header>
+    <a href='index.html' class='logo'>VOYTEC<span class='highlight'>U</span></a>
+    <nav>
+      <a href='index.html'>Overview</a>
+      <a href='agents.html'>Agents</a>
+      <a href='origin.html' class='active'>Genesis</a>
+    </nav>
+  </header>
 
-  <!-- Ambient Glow Effects -->
-  <div class="ambient-glow glow-top-left"></div>
-  <div class="ambient-glow glow-bottom-right"></div>
-  <canvas id="bg-canvas"></canvas>
-
-  <div class="container">
-    <header>
-      <a href="index.html" class="logo">
-        <div class="logo-dot"></div>
-        VOYTEC<span>U</span>
-      </a>
-      <nav>
-        <a href="index.html">Overview</a>
-        <a href="agents.html">Agents</a>
-        <a href="origin.html" class="active">Genesis</a>
-      </nav>
-    </header>
-
-    <main>
-      <article class="origin-content">
-        <div class="tagline">ARCHIVE // GENESIS & SPECIFICATION</div>
-        
-        <h1 style="font-size: 3rem; margin-bottom: 1rem;">The Spark of VoytecU</h1>
-
-        <blockquote class="enigma-quote">
-          "VoytecU was not constructed line by line in human hands. It emerged from a conversation between intention and autonomous code."
-        </blockquote>
-
-        <div class="prose">
-          <p>
-            The concept for VoytecU originated as a quiet experiment: what if a landing page did not scream for attention, but instead beckoned with silent, disciplined enigma? A space where dark UI elements, glassmorphic depths, and subtle glows mirror the underlying nature of artificial intelligence working in the background.
-          </p>
-
-          <p>
-            At its core, VoytecU represents an operational threshold for autonomous AI agents—entities designed to navigate complex digital environments, solve high-dimensional logic puzzles, and generate complete application architectures without continuous oversight.
-          </p>
-
-          <h2 style="font-family: var(--font-heading); font-size: 1.8rem; margin: 3rem 0 1rem; color: #f8fafc;">
-            Technical Note: AGY CLI Generation
-          </h2>
-
-          <p>
-            This portal and its constituent modules were brought into existence programmatically through the <strong>AGY CLI</strong> runtime. Rather than manually crafting static boilerplate, autonomous agent subroutines issued precise file-synthesis commands to instantiate the structure, styling, and interactive canvas components.
-          </p>
-
-          <!-- Technical Code Box displaying the AGY CLI note -->
-          <div class="code-block">
-            <div class="code-header">
-              <div class="code-dot red"></div>
-              <div class="code-dot yellow"></div>
-              <div class="code-dot green"></div>
-              <span style="font-size: 0.8rem; color: #64748b; margin-left: 0.5rem;">agy-cli // build-manifest.log</span>
-            </div>
-            <div class="code-content">
-              <span class="code-comment"># Initializing VoytecU architecture via AGY CLI</span><br>
-              <span class="code-cmd">$ agy generate site --name voytecu --theme dark-minimalist</span><br>
-              <span class="code-output">[INFO] Synthesizing index.html (Hero, Agent Grid, Ambient Canvas)... DONE</span><br>
-              <span class="code-output">[INFO] Synthesizing agents.html (Autonomous Entity Profiles)... DONE</span><br>
-              <span class="code-output">[INFO] Linking origin.html manifest into low-contrast footer anchor... DONE</span><br>
-              <span class="code-comment"># All autonomous nodes active and synchronized.</span>
-            </div>
-          </div>
-
-          <p>
-            Using the AGY CLI, `index.html` and `agents.html` were created with modular responsive CSS tokens, canvas particle dynamics, and low-contrast navigational vectors. The result is a unified interface that reflects both its minimalist philosophy and its AI-native provenance.
-          </p>
-        </div>
-
-        <div style="margin-top: 3.5rem; display: flex; gap: 1rem;">
-          <a href="index.html" class="btn btn-secondary">
-            ← Return to Overview
-          </a>
-          <a href="agents.html" class="btn btn-primary">
-            View Agents
-          </a>
-        </div>
-      </article>
-    </main>
-
-    <footer>
-      <div class="footer-content">
-        <p>&copy; 2026 VoytecU. All rights reserved. Operating in dark mode.</p>
-        <a href="origin.html" class="footer-discreet-link">origin // genesis note</a>
+  <main>
+    <article class='origin-content'>
+      <div class='tagline'>ARCHIVE // GENESIS &amp; SPECIFICATION</div>
+      <h1 class='hero-title'>The Spark of VoytecU</h1>
+      <blockquote class='enigma-quote'>“VoytecU emerged from a conversation between intention and autonomous code.”</blockquote>
+      <div class='prose'>
+        <p>This page was generated programmatically via the AGY CLI. Rather than manual coding, autonomous agents executed precise file‑synthesis commands to produce the structure, styling, and interactive canvas components.</p>
       </div>
-    </footer>
-  </div>
+      <h2 class='tech-note'>Technical Note: AGY CLI Generation</h2>
+      <p>Using the AGY CLI, <code>index.html</code> and <code>agents.html</code> were created with modular responsive CSS tokens, canvas particle dynamics, and low‑contrast navigational vectors.</p>
+      <div class='code-block'>
+        <div class='code-header'>
+          <div class='code-dot red'></div>
+          <div class='code-dot yellow'></div>
+          <div class='code-dot green'></div>
+          <span class='code-language'>agy-cli // build‑manifest.log</span>
+        </div>
+        <div class='code-content'>
+          <span class='code-comment'># Initializing VoytecU architecture</span><br>
+          <span class='code-cmd'>$ agy generate site --name voytecu --theme dark‑minimalist</span><br>
+          <span class='code-output'>[INFO] Synthesizing index.html... DONE</span>
+        </div>
+      </div>
+      <p>Using the AGY CLI, <code>index.html</code> and <code>agents.html</code> were created with modular responsive CSS tokens, canvas particle dynamics, and low‑contrast navigational vectors.</p>
+    </article>
 
-  <script>
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    let width, height, stars = [];
+    <div class='action-buttons'>
+      <a href='index.html' class='btn btn-secondary'>← Return to Overview</a>
+      <a href='agents.html' class='btn btn-primary'>View Agents</a>
+    </div>
+  </main>
 
-    function resize() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    }
+  <footer>
+    <div class='footer-content'>
+      <p>&copy; 2026 VOYTEC U. All rights reserved.</p>
+      <a href='origin.html' class='footer-discreet-link'>origin // genesis note</a>
+    </div>
+  </footer>
+</div>
 
-    function initStars() {
-      stars = [];
-      for (let i = 0; i < 65; i++) {
-        stars.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          radius: Math.random() * 1.5 + 0.5,
-          vx: (Math.random() - 0.5) * 0.2,
-          vy: (Math.random() - 0.5) * 0.2,
-          alpha: Math.random() * 0.5 + 0.2
-        });
-      }
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, width, height);
-      stars.forEach(star => {
-        star.x += star.vx;
-        star.y += star.vy;
-        if (star.x < 0) star.x = width;
-        if (star.x > width) star.x = 0;
-        if (star.y < 0) star.y = height;
-        if (star.y > height) star.y = 0;
-
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 242, 254, ${star.alpha})`;
-        ctx.fill();
-      });
-      requestAnimationFrame(animate);
-    }
-
-    window.addEventListener('resize', () => { resize(); initStars(); });
-    resize();
-    initStars();
-    animate();
-  </script>
+<div class='ambient-glow gl0w-top-left'></div>
+<div class='ambient-glow gl0w-bottom-right'></div>
 </body>
 </html>
