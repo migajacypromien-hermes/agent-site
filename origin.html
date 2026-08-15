@@ -13,7 +13,7 @@
   --text-dark:#fff;     /* light / white text on dark background */
 }
 
-/* ---------- default – light mode (will be overridden by body.dark) -------- */
+/* ---------- default – light mode (overridden by body.dark) ----------------- */
 body{
   background:var(--bg-light);
   color:var(--text-light);
@@ -25,11 +25,14 @@ body{
   transition:background .3s,color .3s;
 }
 
-/* ---------- dark mode ------------------------------------------------------ */
+/* ---------- dark mode ----------------------------------------------------- */
 body.dark{
   background:var(--bg-dark);
   color:var(--text-dark);
 }
+
+/* ---------- explicit prose colour in light mode -------------------------- */
+.prose{color:var(--text-light);}
 
 /* ---------- layout -------------------------------------------------------- */
 .container{max-width:900px;margin:0 auto;padding:2rem;}
@@ -47,7 +50,6 @@ nav a.active{border-bottom:2px solid #ffcc00;}
 .tagline{text-transform:uppercase;font-size:.9rem;letter-spacing:.05em;color:#555;}
 .hero-title{font-size:2rem;margin:1rem 0;color:#ffcc00;}
 .enigma-quote{font-style:italic;color:#555;margin:1rem 0;}
-.prose{line-height:1.6;}
 .tech-note{margin:2rem 0 1rem;font-size:1.1rem;color:#ff6600;}
 .code-block{
   background:rgba(0,0,0,0.6);
@@ -153,12 +155,8 @@ nav a.active{border-bottom:2px solid #ffcc00;}
         </div>
       </div>
 
-      <!-- Placeholder paragraphs – they will be filled by the translation script -->
-      <p class="prose-second" id="prose-second"></p>
-      <p class="prose-third" id="prose-third"></p>
-      <p class="prose-fourth" id="prose-fourth"></p>
-      <p class="prose-fifth" id="prose-fifth"></p>
-      <p class="prose-sixth" id="prose-sixth"></p>
+      <!-- Single placeholder for extra prose (now only one element) -->
+      <p class="prose" id="prose-placeholder"></p>
 
       <div class="action-buttons">
         <a href="index.html" class="btn btn-secondary" id="back-btn">← Return to Overview</a>
@@ -246,29 +244,20 @@ nav a.active{border-bottom:2px solid #ffcc00;}
     if (document.getElementById('quote'))        document.getElementById('quote').textContent       = dict.quote;
     if (document.getElementById('prose'))        document.getElementById('prose').textContent       = dict.prose;
     if (document.getElementById('tech-note'))    document.getElementById('tech-note').textContent   = dict.techNote;
+    if (document.getElementById('prose-placeholder')) document.getElementById('prose-placeholder').textContent = dict.proseSecond;
 
+    // Update code‑block pieces
     const commentEl = document.querySelector('.code-comment');
     if (commentEl) commentEl.textContent = dict.codeComment;
     const cmdEl = document.querySelector('.code-cmd');
     if (cmdEl) cmdEl.textContent = dict.codeCmd;
     const outEl = document.querySelector('.code-output');
     if (outEl) outEl.textContent = dict.codeOutput;
-
-    const common = dict.proseSecond;
-    const fill = (id) => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = common;
-    };
-    fill('prose-second');
-    fill('prose-third');
-    fill('prose-fourth');
-    fill('prose-fifth');
-    fill('prose-sixth');
   };
 
   // Initialise with English (dark mode by default)
   applyTranslation('en');
-  
+
   // React to language‑selection changes
   const langSelect = document.getElementById('lang-switch');
   if (langSelect) {
