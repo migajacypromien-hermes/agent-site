@@ -5,15 +5,15 @@
 <title>Origin & Technical Manifest — VoytecU</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-/* ---- colour tokens ----------------------------------------------------- */
+/* ---------- colour tokens ------------------------------------------------- */
 :root{
-  --bg-light:#f5f5f5;      /* bright / light background */
-  --bg-dark:#020202;       /* dark background */
-  --text-light:#000000;    /* dark / black text on light background */
-  --text-dark:#f5f5f5;     /* light / white text on dark background */
+  --bg-light:#f5f5f5;   /* bright / light background */
+  --bg-dark:#020202;    /* dark background */
+  --text-light:#000;    /* dark / black text on light background */
+  --text-dark:#fff;     /* light / white text on dark background */
 }
 
-/* ---- default – light mode ------------------------------------------------ */
+/* ---------- default – light mode (will be overridden by body.dark) -------- */
 body{
   background:var(--bg-light);
   color:var(--text-light);
@@ -25,13 +25,13 @@ body{
   transition:background .3s,color .3s;
 }
 
-/* ---- dark mode ----------------------------------------------------------- */
+/* ---------- dark mode ------------------------------------------------------ */
 body.dark{
   background:var(--bg-dark);
   color:var(--text-dark);
 }
 
-/* ---- layout ------------------------------------------------------------- */
+/* ---------- layout -------------------------------------------------------- */
 .container{max-width:900px;margin:0 auto;padding:2rem;}
 header{
   display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;
@@ -47,7 +47,7 @@ nav a.active{border-bottom:2px solid #ffcc00;}
 .tagline{text-transform:uppercase;font-size:.9rem;letter-spacing:.05em;color:#555;}
 .hero-title{font-size:2rem;margin:1rem 0;color:#ffcc00;}
 .enigma-quote{font-style:italic;color:#555;margin:1rem 0;}
-.prose{line-height:1.6;color:#000;}
+.prose{line-height:1.6;}
 .tech-note{margin:2rem 0 1rem;font-size:1.1rem;color:#ff6600;}
 .code-block{
   background:rgba(0,0,0,0.6);
@@ -184,19 +184,20 @@ nav a.active{border-bottom:2px solid #ffcc00;}
   const body = document.body;
   const btn = document.getElementById('theme-toggle');
 
-  // ---- 1️⃣ Initialise from storage (fallback to 'light') ----
-  const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
+  // ---- 1️⃣ Load saved theme; default to dark mode -------
+  const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
   const isDark = savedTheme === 'dark';
   if (isDark) body.classList.add('dark');
-  // Set the button icon to match the *current* state
-  btn.textContent = isDark ? '🌙' : '☀️';
+  // Icon reflects the *current* state: dark → sun (☀️), light → moon (🌙)
+  btn.textContent = isDark ? '☀️' : '🌙';
 
-  // ---- 2️⃣ Toggle theme and persist the new state ----
+  // ---- 2️⃣ Toggle theme and persist the new state -------
   const toggleTheme = () => {
     const willBeDark = !body.classList.contains('dark'); // true = we are about to go dark
     body.classList.toggle('dark', willBeDark);
     localStorage.setItem(THEME_KEY, willBeDark ? 'dark' : 'light');
-    btn.textContent = willBeDark ? '🌙' : '☀️';
+    // Update button icon to reflect the *new* state
+    btn.textContent = willBeDark ? '☀️' : '🌙';
   };
   btn.addEventListener('click', toggleTheme);
 
@@ -265,9 +266,9 @@ nav a.active{border-bottom:2px solid #ffcc00;}
     fill('prose-sixth');
   };
 
-  // Initialise with English (light mode)
+  // Initialise with English (dark mode by default)
   applyTranslation('en');
-
+  
   // React to language‑selection changes
   const langSelect = document.getElementById('lang-switch');
   if (langSelect) {
