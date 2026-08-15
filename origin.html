@@ -22,8 +22,14 @@ body{
   min-height:100vh;
   transition:background .3s,color .3s;
 }
-body.light{background:var(--bg-light);color:var(--dim);}
-body.dark{background:var(--bg);color:var(--fg);}
+body.light{
+  background:var(--bg-light);
+  color:var(--dim);
+}
+body.dark{
+  background:var(--bg);
+  color:var(--fg);
+}
 .container{max-width:900px;margin:0 auto;padding:2rem;}
 header{
   display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;
@@ -41,21 +47,57 @@ nav a.active{border-bottom:2px solid var(--accent);}
 .enigma-quote{font-style:italic;color:var(--fg-dim);margin:1rem 0;}
 .prose{line-height:1.6;color:var(--fg);}
 .tech-note{margin:2rem 0 1rem;font-size:1.1rem;color:var(--accent);}
-.code-block{background:rgba(0,0,0,0.6);border-left:4px solid var(--accent);padding:1rem;font-family:monospace;font-size:.9rem;}
+.code-block{
+  background:rgba(0,0,0,0.6);
+  border-left:4px solid var(--accent);
+  padding:1rem;
+  font-family:monospace;
+  font-size:.9rem;
+}
 .code-header{display:flex;align-items:center;}
-.code-dot{width:8px;height:8px;border-radius:50%;margin:0 4px;}
+.code-dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  margin:0 4px;
+}
 .code-dot.red{background:#e63946;}
 .code-dot.yellow{background:#f4d35e;}
 .code-dot.green{background:#2a9d8f;}
 .code-language{margin-left:8px;color:var(--fg-dim);}
 .code-content{margin-top:.5rem;}
 .action-buttons{margin-top:2rem;display:flex;gap:1rem;}
-.btn{padding:.5rem 1rem;border-radius:4px;cursor:pointer;font-weight:500;}
-.btn-secondary{background:rgba(255,255,255,.05);border:1px solid var(--fg-dim);color:var(--fg);}
-.btn-primary{background:var(--accent);color:#fff;border:none;}
-.footer-content{margin-top:3rem;font-size:.9rem;color:var(--fg-dim);text-align:center;}
-.footer-discreet-link{color:var(--fg-dim);text-decoration:none;}
-.ambient-glow{position:absolute;width:150px;height:150px;background:radial-gradient(circle,rgba(0,255,255,.05) 0%,transparent 70%);}
+.btn{
+  padding:.5rem 1rem;
+  border-radius:4px;
+  cursor:pointer;
+  font-weight:500;
+}
+.btn-secondary{
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--fg-dim);
+  color:var(--fg);
+}
+.btn-primary{
+  background:var(--accent);
+  color:#fff;
+  border:none;
+}
+.footer-content{
+  margin-top:3rem;
+  font-size:.9rem;
+  color:var(--fg-dim);
+  text-align:center;
+}
+.footer-discreet-link{
+  color:var(--fg-dim);
+  text-decoration:none;
+}
+.ambient-glow{
+  position:absolute;
+  width:150px;
+  height:150px;
+  background:radial-gradient(circle,rgba(0,255,255,.05) 0%,transparent 70%);
+}
 .ambient-glow.gl0w-top-left{top:8%;left:8%;}
 .ambient-glow.gl0w-bottom-right{bottom:8%;right:8%;}
 </style>
@@ -67,7 +109,7 @@ nav a.active{border-bottom:2px solid var(--accent);}
 
     <!-- Controls -->
     <div class="controls">
-      <button id="theme-toggle">🌙</button>
+      <button id="theme-toggle">☀️</button>
       <select id="lang-switch">
         <option value="en">English</option>
         <option value="de">Deutsch</option>
@@ -84,7 +126,7 @@ nav a.active{border-bottom:2px solid var(--accent);}
 
   <main>
     <article class="origin-content">
-      <div class="tagline" id="tagline">ARCHIVE // GENESIS &amp; SPECIFICATION</div>
+      <div class="tagline" id="tagline">ARCHIVE // GENESIS & SPECIFICATION</div>
 
       <h1 class="hero-title" id="hero-title">The Spark of VoytecU</h1>
 
@@ -135,95 +177,100 @@ nav a.active{border-bottom:2px solid var(--accent);}
 <div class="ambient-glow gl0w-bottom-right"></div>
 
 <script>
-  // ---------- Theme toggle ----------
-  document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.getElementById('theme-toggle');
-    if (!btn) return;
+  // ---------- Persisted Theme Toggle ----------
+  const THEME_KEY = 'voytecU-theme';
+  const body = document.body;
+  const btn = document.getElementById('theme-toggle');
 
-    btn.addEventListener('click', () => {
-      const nowDark = document.body.classList.toggle('dark');
-      // Update button icon to reflect the *new* state
-      btn.textContent = nowDark ? '☀️' : '🌙';
-    });
+  // Load saved theme (default = 'light')
+  const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
+  const isDark = savedTheme === 'dark';
+  if (isDark) body.classList.add('dark');
+  btn.textContent = isDark ? '🌙' : '☀️';
 
-    // ---------- Translation dictionary ----------
-    const translations = {
-      en: {
-        tagline: "ARCHIVE // GENESIS & SPECIFICATION",
-        heroTitle: "The Spark of VoytecU",
-        quote: "“VoytecU emerged from a conversation between intention and autonomous code.”",
-        prose: "This page was generated programmatically via the AGY CLI. Rather than manual coding, autonomous agents executed precise file‑synthesis commands to produce the structure, styling, and interactive canvas components.",
-        techNote: "Technical Note: AGY CLI Generation",
-        codeComment: "# Initializing VoytecU architecture",
-        codeCmd: "$ agy generate site --name voytecu --theme dark‑minimalist",
-        codeOutput: "[INFO] Synthesizing index.html... DONE",
-        proseSecond: "Using the AGY CLI, <code>index.html</code> and <code>agents.html</code> were created with modular responsive CSS tokens, canvas particle dynamics, and low‑contrast navigational vectors."
-      },
-      de: {
-        tagline: "ARCHIV // GENESIS & SPEZIFIKATION",
-        heroTitle: "Der Spark von VoytecU",
-        quote: "„VoytecU ist aus einem Gespräch zwischen Absicht und autonomem Code entstanden.”",
-        prose: "Diese Seite wurde programmgesteuert über das AGY‑CLI erzeugt. Statt manueller Codierung führten autonome Agenten präzise Dateisynthese‑Aufrufe aus, um Struktur, Stil und interaktive Canvas‑Komponenten zu erzeugen.",
-        techNote: "Technische Notiz: AGY‑CLI‑Generierung",
-        codeComment: "# Initializing VoytecU architecture",
-        codeCmd: "$ agy generate site --name voytecu --theme dark‑minimalist",
-        codeOutput: "[INFO] Synthesizing index.html... DONE",
-        proseSecond: "Durch den AGY‑CLI wurden <code>index.html</code> und <code>agents.html</code> mit modularen responsiven CSS‑Tokens, Canvas‑Teilcheneffekten und niedrig‑kontrastierenden Navigationsvektoren erstellt."
-      },
-      pl: {
-        tagline: "ARCHIWUM // GENESY & SPECYFIKOWANIE",
-        heroTitle: "Iskra VoytecU",
-        quote: "„VoytecU wyrosło z rozmowy między intencją a autonomowym kodem.”",
-        prose: "Ta strona została wygenerowana programowo przy pomocy AGY‑CLI. Zamiast ręcznego kodowania, autonomiczne agenty wykonały precyzyjne polecenia syntezy plików, tworząc strukturę, styl i interaktywny komponent kanwy.",
-        techNote: "Techniczna Notatka: Generacja przez AGY‑CLI",
-        codeComment: "# Inicjalizacja architektury VoytecU",
-        codeCmd: "$ agy generate site --name voytecu --theme dark‑minimalist",
-        codeOutput: "[INFO] Tworzenie index.html... ZROBIONO",
-        proseSecond: "Przez AGY‑CLI zostały <code>index.html</code> i <code>agents.html</code> z modułowymi responsywnymi tokenami CSS, dynamiką cząsteczek na kanwie i niskokontrastowymi wektorami nawigacyjnymi."
-      }
-    };
+  // Toggle theme on click and persist the new state
+  const toggleTheme = () => {
+    const willBeDark = !body.classList.contains('dark'); // true = switch to dark
+    body.classList.toggle('dark', willBeDark);
+    localStorage.setItem(THEME_KEY, willBeDark ? 'dark' : 'light');
+    btn.textContent = willBeDark ? '🌙' : '☀️';
+  };
 
-    // Apply a translation according to the selected language
-    const applyTranslation = (lang) => {
-      const dict = translations[lang] || translations.en;
+  btn.addEventListener('click', toggleTheme);
 
-      // Simple‑ID elements
-      if (document.getElementById('tagline'))      document.getElementById('tagline').textContent       = dict.tagline;
-      if (document.getElementById('hero-title'))    document.getElementById('hero-title').textContent    = dict.heroTitle;
-      if (document.getElementById('quote'))        document.getElementById('quote').textContent       = dict.quote;
-      if (document.getElementById('prose'))        document.getElementById('prose').textContent       = dict.prose;
-      if (document.getElementById('tech-note'))    document.getElementById('tech-note').textContent   = dict.techNote;
-
-      // Code‑block pieces
-      const commentEl = document.querySelector('.code-comment');
-      if (commentEl) commentEl.textContent = dict.codeComment;
-      const cmdEl = document.querySelector('.code-cmd');
-      if (cmdEl) cmdEl.textContent = dict.codeCmd;
-      const outEl = document.querySelector('.code-output');
-      if (outEl) outEl.textContent = dict.codeOutput;
-
-      // The remaining placeholder paragraphs all share the same string (the second prose entry)
-      const common = dict.proseSecond;
-      const fill = (elId) => {
-        const el = document.getElementById(elId);
-        if (el) el.textContent = common;
-      };
-      fill('prose-second');
-      fill('prose-third');
-      fill('prose-fourth');
-      fill('prose-fifth');
-      fill('prose-sixth');
-    };
-
-    // Initialise with English
-    applyTranslation('en');
-
-    // Listen for language‑selection changes
-    const langSelect = document.getElementById('lang-switch');
-    if (langSelect) {
-      langSelect.addEventListener('change', (e) => applyTranslation(e.target.value));
+  // ---------- Translation ----------
+  const translations = {
+    en: {
+      tagline: "ARCHIVE // GENESIS & SPECIFICATION",
+      heroTitle: "The Spark of VoytecU",
+      quote: "“VoytecU emerged from a conversation between intention and autonomous code.”",
+      prose: "This page was generated programmatically via the AGY CLI. Rather than manual coding, autonomous agents executed precise file‑synthesis commands to produce the structure, styling, and interactive canvas components.",
+      techNote: "Technical Note: AGY CLI Generation",
+      codeComment: "# Initializing VoytecU architecture",
+      codeCmd: "$ agy generate site --name voytecu --theme dark‑minimalist",
+      codeOutput: "[INFO] Synthesizing index.html... DONE",
+      proseSecond: "Using the AGY CLI, <code>index.html</code> and <code>agents.html</code> were created with modular responsive CSS tokens, canvas particle dynamics, and low‑contrast navigational vectors."
+    },
+    de: {
+      tagline: "ARCHIV // GENESIS & SPEZIFIKATION",
+      heroTitle: "Der Spark von VoytecU",
+      quote: "„VoytecU ist aus einem Gespräch zwischen Absicht und autonomem Code entstanden.”",
+      prose: "Diese Seite wurde programmgesteuert über das AGY‑CLI erzeugt. Statt manueller Codierung führten autonome Agenten präzise Dateisynthese‑Aufrufe aus, um Struktur, Stil und interaktive Canvas‑Komponenten zu erzeugen.",
+      techNote: "Technische Notiz: AGY‑CLI‑Generierung",
+      codeComment: "# Initializing VoytecU architecture",
+      codeCmd: "$ agy generate site --name voytecu --theme dark‑minimalist",
+      codeOutput: "[INFO] Synthesizing index.html... DONE",
+      proseSecond: "Durch den AGY‑CLI wurden <code>index.html</code> und <code>agents.html</code> mit modularen responsiven CSS‑Tokens, Canvas‑Teilcheneffekten und niedrig‑kontrastierenden Navigationsvektoren erstellt."
+    },
+    pl: {
+      tagline: "ARCHIWUM // GENESY & SPECYFIKOWANIE",
+      heroTitle: "Iskra VoytecU",
+      quote: "„VoytecU wyrosło z rozmowy między intencją a autonomowym kodem.”",
+      prose: "Ta strona została wygenerowana programowo przy pomocy AGY‑CLI. Zamiast ręcznego kodowania, autonomiczne agenty wykonały precyzyjne polecenia syntezy plików, tworząc strukturę, styl i interaktywny komponent kanwy.",
+      techNote: "Techniczna Notatka: Generacja przez AGY‑CLI",
+      codeComment: "# Inicjalizacja architektury VoytecU",
+      codeCmd: "$ agy generate site --name voytecu --theme dark‑minimalist",
+      codeOutput: "[INFO] Tworzenie index.html... ZROBIONO",
+      proseSecond: "Przez AGY‑CLI zostały <code>index.html</code> i <code>agents.html</code> z modułowymi responsywnymi tokenami CSS, dynamiką cząsteczek na kanwie i niskokontrastowymi wektorami nawigacyjnymi."
     }
-  });
+  };
+
+  const applyTranslation = (lang) => {
+    const dict = translations[lang] || translations.en;
+
+    if (document.getElementById('tagline'))      document.getElementById('tagline').textContent      = dict.tagline;
+    if (document.getElementById('hero-title'))    document.getElementById('hero-title').textContent    = dict.heroTitle;
+    if (document.getElementById('quote'))        document.getElementById('quote').textContent       = dict.quote;
+    if (document.getElementById('prose'))        document.getElementById('prose').textContent       = dict.prose;
+    if (document.getElementById('tech-note'))    document.getElementById('tech-note').textContent   = dict.techNote;
+
+    const commentEl = document.querySelector('.code-comment');
+    if (commentEl) commentEl.textContent = dict.codeComment;
+    const cmdEl = document.querySelector('.code-cmd');
+    if (cmdEl) cmdEl.textContent = dict.codeCmd;
+    const outEl = document.querySelector('.code-output');
+    if (outEl) outEl.textContent = dict.codeOutput;
+
+    const common = dict.proseSecond;
+    const fill = (id) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = common;
+    };
+    fill('prose-second');
+    fill('prose-third');
+    fill('prose-fourth');
+    fill('prose-fifth');
+    fill('prose-sixth');
+  };
+
+  // Initialise with English
+  applyTranslation('en');
+
+  // React to language selection changes
+  const langSelect = document.getElementById('lang-switch');
+  if (langSelect) {
+    langSelect.addEventListener('change', (e) => applyTranslation(e.target.value));
+  }
 </script>
 </body>
 </html>
