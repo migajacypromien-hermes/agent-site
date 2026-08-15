@@ -25,7 +25,7 @@ body{
   transition:background .3s,color .3s;
 }
 
-/* ---------- dark mode ----------------------------------------------------- */
+/* ---------- explicit dark mode ------------------------------------------ */
 body.dark{
   background:var(--bg-dark);
   color:var(--text-dark);
@@ -98,8 +98,7 @@ nav a.active{border-bottom:2px solid #ffcc00;}
 }
 .ambient-glow{
   position:absolute;
-  width:150px;
-  height:150px;
+  width:150px;height:150px;
   background:radial-gradient(circle,rgba(0,255,255,.05) 0%,transparent 70%);
 }
 .ambient-glow.gl0w-top-left{top:8%;left:8;}
@@ -137,21 +136,21 @@ nav a.active{border-bottom:2px solid #ffcc00;}
       <blockquote class="enigma-quote" id="quote">“VoytecU emerged from a conversation between intention and autonomous code.”</blockquote>
 
       <div class="prose" id="prose">
-        This page was generated programmatically via the AGY CLI. Rather than manual coding, autonomous agents executed precise file‑synthesis commands to produce the structure, styling, and interactive canvas components.
+        This page was generated programmatically via the agentic ai. Rather than manual coding, autonomous agents executed precise file‑synthesis commands to produce the structure, styling, and interactive canvas components.
       </div>
 
-      <h2 class="tech-note" id="tech-note">Technical Note: AGY CLI Generation</h2>
+      <h2 class="tech-note" id="tech-note">Technical Note: Agentic AI Generation</h2>
       <div class="code-block">
         <div class="code-header">
           <div class="code-dot red"></div>
           <div class="code-dot yellow"></div>
           <div class="code-dot green"></div>
-          <span class="code-language">agy-cli // build‑manifest.log</span>
+          <span class="code-language">agentic ai // build‑manifest.log</span>
         </div>
         <div class="code-content">
           <span class="code-comment"># Initializing VoytecU architecture</span><br>
-          <span class="code-cmd">$ agy generate site --name voytecu --theme dark‑minimalist</span><br>
-          <span class="code-output">[INFO] Synthesizing index.html... DONE</span>
+          <span class="code-cmd">$ agentic ai generate site --name voytecu --theme dark‑minimalist</span><br>
+          <span class="code-output">[INFO] Generating index.html... COMPLETE</span>
         </div>
       </div>
 
@@ -182,19 +181,19 @@ nav a.active{border-bottom:2px solid #ffcc00;}
   const body = document.body;
   const btn = document.getElementById('theme-toggle');
 
-  // ---- 1️⃣ Load saved theme; default to dark mode -------
+  // 1️⃣ Load saved theme; default to dark mode
   const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
   const isDark = savedTheme === 'dark';
   if (isDark) body.classList.add('dark');
-  // Icon reflects the *current* state: dark → sun (☀️), light → moon (🌙)
+  // Icon reflects current state: dark → sun (☀️), light → moon (🌙)
   btn.textContent = isDark ? '☀️' : '🌙';
 
-  // ---- 2️⃣ Toggle theme and persist the new state -------
+  // 2️⃣ Toggle theme and persist the new state
   const toggleTheme = () => {
     const willBeDark = !body.classList.contains('dark'); // true = we are about to go dark
     body.classList.toggle('dark', willBeDark);
     localStorage.setItem(THEME_KEY, willBeDark ? 'dark' : 'light');
-    // Update button icon to reflect the *new* state
+    // Update button icon to show the *new* state
     btn.textContent = willBeDark ? '☀️' : '🌙';
   };
   btn.addEventListener('click', toggleTheme);
@@ -205,34 +204,34 @@ nav a.active{border-bottom:2px solid #ffcc00;}
       tagline: "ARCHIVE // GENESIS & SPECIFICATION",
       heroTitle: "The Spark of VoytecU",
       quote: "“VoytecU emerged from a conversation between intention and autonomous code.”",
-      prose: "This page was generated programmatically via the AGY CLI. Rather than manual coding, autonomous agents executed precise file‑synthesis commands to produce the structure, styling, and interactive canvas components.",
-      techNote: "Technical Note: AGY CLI Generation",
+      prose: "This page was generated programmatically via the agentic ai. Rather than manual coding, autonomous agents executed precise file‑synthesis commands to produce the structure, styling, and interactive canvas components.",
+      techNote: "Technical Note: Agentic AI Generation",
       codeComment: "# Initializing VoytecU architecture",
-      codeCmd: "$ agy generate site --name voytecu --theme dark‑minimalist",
-      codeOutput: "[INFO] Synthesizing index.html... DONE",
+      codeCmd: "$ agentic ai generate site --name voytecu --theme dark‑minimalist",
+      codeOutput: "[INFO] Generating index.html... COMPLETE",
       proseSecond: "Using the AGY CLI, <code>index.html</code> and <code>agents.html</code> were created with modular responsive CSS tokens, canvas particle dynamics, and low‑contrast navigational vectors."
     },
     de: {
       tagline: "ARCHIV // GENESIS & SPEZIFIKATION",
       heroTitle: "Der Spark von VoytecU",
       quote: "„VoytecU ist aus einem Gespräch zwischen Absicht und autonomem Code entstanden.”",
-      prose: "Diese Seite wurde programmgesteuert über das AGY‑CLI erzeugt. Statt manueller Codierung führten autonome Agenten präzise Dateisynthese‑Aufrufe aus, um Struktur, Stil und interaktive Canvas‑Komponenten zu erzeugen.",
-      techNote: "Technische Notiz: AGY‑CLI‑Generierung",
+      prose: "Diese Seite wurde programmgesteuert über das agentic ai erzeugt. Statt manueller Codierung führten autonome Agenten präzise Dateisynthese‑Aufrufe aus, um Struktur, Stil und interaktive Canvas‑Komponenten zu erzeugen.",
+      techNote: "Technische Notiz: AGY-CLI-Generierung",
       codeComment: "# Initializing VoytecU architecture",
-      codeCmd: "$ agy generate site --name voytecu --theme dark‑minimalist",
-      codeOutput: "[INFO] Synthesizing index.html... DONE",
-      proseSecond: "Durch den AGY‑CLI wurden <code>index.html</code> und <code>agents.html</code> mit modularen responsiven CSS‑Tokens, Canvas‑Teilcheneffekten und niedrig‑kontrastierenden Navigationsvektoren erstellt."
+      codeCmd: "$ agentic ai generate site --name voytecu --theme dark‑minimalist",
+      codeOutput: "[INFO] Generating index.html... COMPLETE",
+      proseSecond: "Durch den agentic ai wurden <code>index.html</code> und <code>agents.html</code> mit modularen responsiven CSS‑Token, Canvas‑Teilcheneffekten und niedrig‑kontrastigen Navigationsvektoren erstellt."
     },
     pl: {
       tagline: "ARCHIWUM // GENESY & SPECYFIKOWANIE",
       heroTitle: "Iskra VoytecU",
-      quote: "„VoytecU wyrosło z rozmowy między intencją a autonomowym kodem.”",
-      prose: "Ta strona została wygenerowana programowo przy pomocy AGY‑CLI. Zamiast ręcznego kodowania, autonomiczne agenty wykonały precyzyjne polecenia syntezy plików, tworząc strukturę, styl i interaktywny komponent kanwy.",
-      techNote: "Techniczna Notatka: Generacja przez AGY‑CLI",
+      quote: "„VoytecU wyrosł z rozmowy między intencją a autonomowym kodem.”",
+      prose: "Ta strona została wygenerowana programowo przy pomocy agentic ai. Zamiast ręcznego kodowania, autonomiczne agenty wykonały precyzyjne polecenia syntezy plików, tworząc strukturę, styl i interaktywny komponent płótna.",
+      techNote: "Techniczna Notatka: Generacja przez AGY-CLI",
       codeComment: "# Inicjalizacja architektury VoytecU",
-      codeCmd: "$ agy generate site --name voytecu --theme dark‑minimalist",
+      codeCmd: "$ agentic ai generate site --name voytecu --theme dark‑minimalist",
       codeOutput: "[INFO] Tworzenie index.html... ZROBIONO",
-      proseSecond: "Przez AGY‑CLI zostały <code>index.html</code> i <code>agents.html</code> z modułowymi responsywnymi tokenami CSS, dynamiką cząsteczek na kanwie i niskokontrastowymi wektorami nawigacyjnymi."
+      proseSecond: "Przez agentic ai zostały <code>index.html</code> i <code>agents.html</code> z modułowymi responsywnymi tokenami CSS, dynamiką cząsteczek na płótnie i niskokontrastowymi wektorami nawigacyjnymi."
     }
   };
 
@@ -246,7 +245,7 @@ nav a.active{border-bottom:2px solid #ffcc00;}
     if (document.getElementById('tech-note'))    document.getElementById('tech-note').textContent   = dict.techNote;
     if (document.getElementById('prose-placeholder')) document.getElementById('prose-placeholder').textContent = dict.proseSecond;
 
-    // Update code‑block pieces
+    // Update code‑block snippets
     const commentEl = document.querySelector('.code-comment');
     if (commentEl) commentEl.textContent = dict.codeComment;
     const cmdEl = document.querySelector('.code-cmd');
