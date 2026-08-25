@@ -1,1 +1,831 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ollama Metrics Dashboard</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --muted:#94a3b8;
+      --accent:#38bdf8;
+      --accent-2:#7c3aed;
+      --glass: rgba(255,255,255,0.03);
+      --success:#10b981;
+      --danger:#ef4444;
+      --card-radius:12px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color: #e6eef8;
+    }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#061022 0%, #071126 100%);font-size:14px}
+    .app{
+      max-width:1200px;
+      margin:24px auto;
+      padding:20px;
+      gap:18px;
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      align-items:start;
+    }
+    .left-col{display:grid;gap:18px}
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:var(--card-radius);
+      padding:16px;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .header{
+      display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:8px;
+    }
+    h1{font-size:18px;margin:0}
+    .sub{color:var(--muted);font-size:12px}
+    .controls{display:flex;flex-wrap:wrap;gap:8px}
+    .controls > *{background:var(--glass);border-radius:8px;padding:6px 8px;border:1px solid rgba(255,255,255,0.02);color:inherit}
+    select,input[type="date"],input[type="text"]{background:transparent;border:none;color:inherit;outline:none}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .stat{
+      background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+      padding:10px;border-radius:10px;text-align:center;
+    }
+    .stat .num{font-size:18px;font-weight:600}
+    .filters{display:flex;flex-direction:column;gap:8px}
+    .small{font-size:12px;color:var(--muted)}
+    canvas{width:100%;height:160px;background:transparent;border-radius:8px}
+    .chart-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .table{width:100%;border-collapse:collapse;margin-top:8px}
+    .table th,.table td{padding:6px 8px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03);font-size:13px}
+    .muted{color:var(--muted)}
+    .sidebar{display:flex;flex-direction:column;gap:12px}
+    .btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:8px 10px;border-radius:8px;color:#06202a;border:none;font-weight:600;cursor:pointer}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02)}
+    .legend{display:flex;flex-wrap:wrap;gap:8px}
+    .legend .item{display:flex;gap:8px;align-items:center;font-size:13px}
+    .dot{width:12px;height:12px;border-radius:50%}
+    .table-wrap{max-height:300px;overflow:auto}
+    footer{margin-top:14px;color:var(--muted);font-size:12px;text-align:center}
+    @media (max-width:1000px){
+      .app{grid-template-columns:1fr; padding:12px}
+      .chart-row{grid-template-columns:1fr}
+      .stats-grid{grid-template-columns:repeat(2,1fr)}
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <div class="left-col">
+      <div class="card header">
+        <div>
+          <h1>Ollama Link Metrics Dashboard</h1>
+          <div class="sub">Interactive snapshot from the JSONL feed</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button id="refreshBtn" class="btn" title="Refetch data">Refresh</button>
+            <button id="downloadBtn" class="pill" title="Download filtered JSON">Download JSON</button>
+          </div>
+          <div class="small muted" id="lastUpdated">—</div>
+        </div>
+      </div>
 
+      <div class="card">
+        <div class="header">
+          <div>
+            <div class="small muted">Filters</div>
+            <div style="margin-top:6px;display:flex;gap:8px;align-items:center">
+              <div class="controls">
+                <div style="display:flex;gap:8px;">
+                  <label class="pill small muted">From <input id="fromDate" type="date"></label>
+                  <label class="pill small muted">To <input id="toDate" type="date"></label>
+                  <label class="pill small muted">Platform
+                    <select id="platformFilter">
+                      <option value="">All</option>
+                    </select>
+                  </label>
+                  <label class="pill small muted">Model
+                    <select id="modelFilter">
+                      <option value="">All</option>
+                    </select>
+                  </label>
+                </div>
+                <div style="display:flex;gap:8px;margin-top:6px;">
+                  <label class="pill small muted">Status
+                    <select id="statusFilter">
+                      <option value="">All</option>
+                      <option value="success">success</option>
+                      <option value="failure">failure</option>
+                    </select>
+                  </label>
+                  <label class="pill small muted">Delivered
+                    <select id="deliveredFilter">
+                      <option value="">Any</option>
+                      <option value="true">Yes</option>
+                      <option value="false">No</option>
+                    </select>
+                  </label>
+                  <label class="pill small muted">Search
+                    <input id="textSearch" type="text" placeholder="keywords, id, source..." />
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div class="small muted">Entries loaded</div>
+            <div id="countAll" class="num">0</div>
+          </div>
+        </div>
+
+        <div class="stats-grid" style="margin-top:12px">
+          <div class="stat">
+            <div class="small muted">Total runs</div>
+            <div id="totalRuns" class="num">0</div>
+          </div>
+          <div class="stat">
+            <div class="small muted">Success rate</div>
+            <div id="successRate" class="num">0%</div>
+          </div>
+          <div class="stat">
+            <div class="small muted">Delivered rate</div>
+            <div id="deliveredRate" class="num">0%</div>
+          </div>
+          <div class="stat">
+            <div class="small muted">Avg run duration (s)</div>
+            <div id="avgRunDuration" class="num">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="header">
+          <div>
+            <div class="small muted">Time series</div>
+            <div style="font-weight:600">Runs per day</div>
+          </div>
+          <div class="small muted">Zoom: <input id="daysBack" type="range" min="7" max="365" value="90" /> <span id="daysBackLabel">90d</span></div>
+        </div>
+        <canvas id="runsSeries" height="160"></canvas>
+        <div class="small muted" style="margin-top:8px">Hover to see counts per day.</div>
+      </div>
+
+      <div class="card chart-row">
+        <div>
+          <div class="small muted">Top models</div>
+          <canvas id="modelBar" height="160"></canvas>
+        </div>
+        <div>
+          <div class="small muted">Destinations</div>
+          <canvas id="destPie" height="160"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="header">
+          <div>
+            <div class="small muted">Durations distribution</div>
+            <div style="font-weight:600">run_duration histogram</div>
+          </div>
+          <div class="small muted">Bins: <input id="histBins" type="range" min="5" max="40" value="12" /> <span id="histBinsLabel">12</span></div>
+        </div>
+        <canvas id="histogram" height="160"></canvas>
+        <div style="margin-top:8px;display:flex;gap:12px;flex-wrap:wrap">
+          <div class="muted small">Avg Ollama summary (s): <span id="avgSummary">-</span></div>
+          <div class="muted small">Avg Ollama response (s): <span id="avgResponse">-</span></div>
+          <div class="muted small">Avg articles_length: <span id="avgArticles">-</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="header">
+          <div>
+            <div class="small muted">Top keywords & sources</div>
+            <div style="font-weight:600">Most frequent keywords, article_source</div>
+          </div>
+          <div class="small muted">Top 12</div>
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
+          <div style="flex:1;">
+            <div class="small muted">Keywords (from keywords_used)</div>
+            <div id="keywordsList" class="legend" style="margin-top:8px"></div>
+          </div>
+          <div style="width:240px">
+            <div class="small muted">article_source</div>
+            <div id="sourceList" class="legend" style="margin-top:8px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="header">
+          <div>
+            <div class="small muted">Recent entries</div>
+            <div style="font-weight:600">Latest 40 runs (filtered)</div>
+          </div>
+          <div class="small muted">Sort: <select id="sortSelect">
+            <option value="timestamp_desc">Newest</option>
+            <option value="timestamp_asc">Oldest</option>
+            <option value="run_duration_desc">Run duration desc</option>
+            <option value="run_duration_asc">Run duration asc</option>
+          </select></div>
+        </div>
+        <div class="table-wrap">
+          <table class="table" id="recentTable">
+            <thead>
+              <tr><th>timestamp</th><th>id</th><th>platform</th><th>model</th><th>run(s)</th><th>success</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <footer class="card" style="text-align:center">
+        Built client-side. Data from:
+        <div class="small muted">https://raw.githubusercontent.com/voytecu314/public_ollama_link_metrics/main/linkedin_posts_metrics.jsonl</div>
+      </footer>
+    </div>
+
+    <aside class="sidebar">
+      <div class="card">
+        <div class="header">
+          <div>
+            <div class="small muted">Quick breakdown</div>
+            <div style="font-weight:600">Top-level counts</div>
+          </div>
+          <div class="small muted">Filters apply</div>
+        </div>
+        <div style="margin-top:8px">
+          <div class="muted small">By platform</div>
+          <div id="platformBreak" style="margin-top:8px"></div>
+        </div>
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0" />
+        <div>
+          <div class="muted small">By destination</div>
+          <div id="destBreak" style="margin-top:8px"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="small muted">Data operations</div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button id="loadSampleBtn" class="pill">Load sample (demo)</button>
+          <button id="clearFilters" class="pill">Clear filters</button>
+        </div>
+        <div style="margin-top:8px" class="small muted">Total parsed rows: <span id="parsedCount">0</span></div>
+      </div>
+
+      <div class="card">
+        <div class="small muted">Meta</div>
+        <div style="margin-top:8px">
+          <div class="small muted">Unique models: <span id="uniqueModels">0</span></div>
+          <div class="small muted">Unique sources: <span id="uniqueSources">0</span></div>
+          <div style="margin-top:8px"><button id="inspectRaw" class="pill">Show raw JSON sample</button></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+<script>
+(async function(){
+  const DATA_URL = 'https://raw.githubusercontent.com/voytecu314/public_ollama_link_metrics/main/linkedin_posts_metrics.jsonl';
+  let rawText = '';
+  let rows = []; // parsed objects
+  let filtered = [];
+  // DOM
+  const el = id => document.getElementById(id);
+  const lastUpdated = el('lastUpdated');
+  const refreshBtn = el('refreshBtn');
+  const downloadBtn = el('downloadBtn');
+  const fromDate = el('fromDate');
+  const toDate = el('toDate');
+  const platformFilter = el('platformFilter');
+  const modelFilter = el('modelFilter');
+  const statusFilter = el('statusFilter');
+  const deliveredFilter = el('deliveredFilter');
+  const textSearch = el('textSearch');
+  const countAll = el('countAll');
+  const totalRuns = el('totalRuns');
+  const successRate = el('successRate');
+  const deliveredRate = el('deliveredRate');
+  const avgRunDuration = el('avgRunDuration');
+  const daysBack = el('daysBack');
+  const daysBackLabel = el('daysBackLabel');
+  const runsSeries = el('runsSeries');
+  const modelBar = el('modelBar');
+  const destPie = el('destPie');
+  const histogram = el('histogram');
+  const histBins = el('histBins');
+  const histBinsLabel = el('histBinsLabel');
+  const avgSummary = el('avgSummary');
+  const avgResponse = el('avgResponse');
+  const avgArticles = el('avgArticles');
+  const keywordsList = el('keywordsList');
+  const sourceList = el('sourceList');
+  const recentTable = el('recentTable').querySelector('tbody');
+  const parsedCount = el('parsedCount');
+  const platformBreak = el('platformBreak');
+  const destBreak = el('destBreak');
+  const loadSampleBtn = el('loadSampleBtn');
+  const clearFilters = el('clearFilters');
+  const uniqueModels = el('uniqueModels');
+  const uniqueSources = el('uniqueSources');
+  const inspectRaw = el('inspectRaw');
+  const sortSelect = el('sortSelect');
+
+  // Canvas contexts
+  const ctxRuns = runsSeries.getContext('2d');
+  const ctxModels = modelBar.getContext('2d');
+  const ctxDest = destPie.getContext('2d');
+  const ctxHist = histogram.getContext('2d');
+
+  // utils
+  function safeGet(o,k){ return (o && (k in o)) ? o[k] : null; }
+  function parseJSONL(text){
+    const lines = text.split('\\n');
+    const out = [];
+    for(let i=0;i<lines.length;i++){
+      const l = lines[i].trim();
+      if(!l) continue;
+      try{
+        const obj = JSON.parse(l);
+        out.push(obj);
+      }catch(e){
+        // skip invalid line
+        console.warn('skipping line', i, e);
+      }
+    }
+    return out;
+  }
+  function dateFrom(obj){
+    if(!obj) return null;
+    const t = obj.timestamp || obj.time || obj.ts || obj.created_at;
+    if(!t) return null;
+    const d = new Date(t);
+    if(isNaN(d)) return null;
+    return d;
+  }
+  function formatDateShort(d){
+    if(!d) return '—';
+    return d.toISOString().slice(0,19).replace('T',' ');
+  }
+  function uniq(arr){
+    return Array.from(new Set(arr.filter(x=>x!=null && x!=='')));
+  }
+
+  // fetch & parse
+  async function fetchData(){
+    try{
+      lastUpdated.textContent = 'Loading…';
+      const r = await fetch(DATA_URL + '?cachebust=' + Date.now());
+      rawText = await r.text();
+      rows = parseJSONL(rawText);
+      rows.forEach(r=>{
+        r._date = dateFrom(r);
+      });
+      parsedCount.textContent = rows.length;
+      // prepare filter values
+      populateFilters();
+      // set default date range
+      const dates = rows.map(r=>r._date).filter(Boolean).sort((a,b)=>a-b);
+      if(dates.length){
+        const min = dates[0];
+        const max = dates[dates.length-1];
+        fromDate.value = min.toISOString().slice(0,10);
+        toDate.value = max.toISOString().slice(0,10);
+      }
+      lastUpdated.textContent = 'Loaded ' + rows.length + ' rows';
+      renderAll();
+    }catch(e){
+      console.error(e);
+      lastUpdated.textContent = 'Load failed: ' + e.message;
+    }
+  }
+
+  function populateFilters(){
+    const platforms = uniq(rows.map(r=>r.platform));
+    const models = uniq(rows.map(r=>safeGet(r,'ollama_model') || safeGet(r,'ollama_summary_model') || r.ollama_model || r.ollama_summary_model || r.model)).sort();
+    platformFilter.innerHTML = '<option value="">All</option>' + platforms.map(p=>`<option value="${p}">${p}</option>`).join('');
+    modelFilter.innerHTML = '<option value="">All</option>' + models.map(m=>`<option value="${m}">${m}</option>`).join('');
+    uniqueModels.textContent = models.length;
+    const sources = uniq(rows.map(r=>r.article_source)).sort();
+    uniqueSources.textContent = sources.length;
+  }
+
+  // filtering pipeline
+  function applyFilters(){
+    const from = fromDate.value ? new Date(fromDate.value + 'T00:00:00') : null;
+    const to = toDate.value ? new Date(toDate.value + 'T23:59:59') : null;
+    const pf = platformFilter.value;
+    const mf = modelFilter.value;
+    const sf = statusFilter.value;
+    const df = deliveredFilter.value;
+    const txt = textSearch.value.trim().toLowerCase();
+
+    filtered = rows.filter(r=>{
+      if(from && (!r._date || r._date < from)) return false;
+      if(to && (!r._date || r._date > to)) return false;
+      if(pf && (r.platform !== pf)) return false;
+      if(mf){
+        const m = safeGet(r,'ollama_model') || safeGet(r,'ollama_summary_model') || r.model || '';
+        if(!m || m !== mf) return false;
+      }
+      if(sf){
+        const succ = !!r.success;
+        if(sf === 'success' && !succ) return false;
+        if(sf === 'failure' && succ) return false;
+      }
+      if(df){
+        const d = (typeof r.delivered === 'boolean') ? String(r.delivered) : (r.delivered==null ? '' : String(r.delivered));
+        if(df === 'true' && d !== 'true') return false;
+        if(df === 'false' && d !== 'false') return false;
+      }
+      if(txt){
+        // search in some commonly useful fields
+        const hay = [
+          r.id,
+          r.module_name,
+          r.platform,
+          r.destination,
+          r.article_source,
+          r.keywords_used,
+          safeGet(r,'ollama_model'),
+          safeGet(r,'ollama_summary_model'),
+          String(r.ollama_title_length || ''),
+          JSON.stringify(r)
+        ].filter(Boolean).join(' ').toLowerCase();
+        if(!hay.includes(txt)) return false;
+      }
+      return true;
+    });
+    countAll.textContent = filtered.length;
+    return filtered;
+  }
+
+  // compute metrics
+  function computeStats(data){
+    const out = {};
+    out.total = data.length;
+    const succ = data.filter(d=>d.success).length;
+    out.successRate = data.length ? Math.round(succ/data.length*100) : 0;
+    const delivered = data.filter(d=>d.delivered).length;
+    out.deliveredRate = data.length ? Math.round(delivered/data.length*100) : 0;
+    const runDurations = data.map(d=>typeof d.run_duration === 'number' ? d.run_duration : (d.run_duration ? Number(d.run_duration) : null)).filter(v=>v!=null && !isNaN(v));
+    out.avgRunDuration = runDurations.length ? (runDurations.reduce((a,b)=>a+b,0)/runDurations.length).toFixed(2) : '—';
+    const summaryDur = data.map(d=>safeGet(d,'ollama_summary_model_duration')).filter(v=>typeof v==='number');
+    out.avgSummary = summaryDur.length ? (summaryDur.reduce((a,b)=>a+b,0)/summaryDur.length).toFixed(2) : '—';
+    const responseDur = data.map(d=>safeGet(d,'ollama_response_model_duration')).filter(v=>typeof v==='number');
+    out.avgResponse = responseDur.length ? (responseDur.reduce((a,b)=>a+b,0)/responseDur.length).toFixed(2) : '—';
+    const avgArticles = data.map(d=>d.articles_length).filter(v=>typeof v==='number');
+    out.avgArticles = avgArticles.length ? Math.round(avgArticles.reduce((a,b)=>a+b,0)/avgArticles.length) : '—';
+
+    // counts
+    const models = {};
+    const platforms = {};
+    const dests = {};
+    const sources = {};
+    const keywords = {};
+    data.forEach(d=>{
+      const m = safeGet(d,'ollama_model') || safeGet(d,'ollama_summary_model') || d.model || 'unknown';
+      models[m] = (models[m]||0)+1;
+      if(d.platform) platforms[d.platform] = (platforms[d.platform]||0)+1;
+      if(d.destination) dests[d.destination] = (dests[d.destination]||0)+1;
+      if(d.article_source) sources[d.article_source] = (sources[d.article_source]||0)+1;
+      const k = d.keywords_used;
+      if(k){
+        // keywords_used often comma or space separated single keyword; split safely
+        const parts = String(k).split(/[,;\\|\\s]+/).map(s=>s.trim()).filter(Boolean);
+        parts.forEach(p => keywords[p] = (keywords[p]||0)+1);
+      }
+    });
+    out.models = models;
+    out.platforms = platforms;
+    out.dests = dests;
+    out.sources = sources;
+    out.keywords = keywords;
+    out.runDurations = runDurations;
+    return out;
+  }
+
+  // chart helpers (tiny charting)
+  function drawBar(ctx,labels,values,colors){
+    const dpr = window.devicePixelRatio || 1;
+    const w = ctx.canvas.clientWidth, h = ctx.canvas.clientHeight;
+    ctx.canvas.width = w * dpr; ctx.canvas.height = h * dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    const pad = 8;
+    const maxv = Math.max(...values,1);
+    const barW = (w - pad*2) / values.length * 0.8;
+    const gap = ((w - pad*2) - (barW*values.length)) / (values.length-1 || 1);
+    for(let i=0;i<values.length;i++){
+      const val = values[i];
+      const x = pad + i*(barW + gap);
+      const barH = (val/maxv) * (h - 36);
+      ctx.fillStyle = colors && colors[i] ? colors[i] : 'rgba(56,189,248,0.9)';
+      roundRect(ctx, x, h-12-barH, barW, barH, 6);
+      ctx.fill();
+    }
+    // labels
+    ctx.fillStyle = '#9fb6ce';
+    ctx.font = '12px system-ui, Arial';
+    ctx.textAlign = 'center';
+    labels.forEach((lab,i)=>{
+      const x = pad + i*(barW+gap) + barW/2;
+      const txt = (lab.length>12 ? lab.slice(0,9)+'...' : lab);
+      ctx.fillText(txt, x, h-2);
+    });
+  }
+  function drawPie(ctx,labels,values,colors){
+    const dpr = window.devicePixelRatio || 1;
+    const w = ctx.canvas.clientWidth, h = ctx.canvas.clientHeight;
+    ctx.canvas.width = w * dpr; ctx.canvas.height = h * dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    const cx = w/2, cy = h/2, r = Math.min(w,h)/2 - 16;
+    const total = values.reduce((a,b)=>a+b,0) || 1;
+    let ang = -Math.PI/2;
+    ctx.font = '12px system-ui, Arial';
+    labels.forEach((lab,i)=>{
+      const v = values[i];
+      const a = v/total * Math.PI*2;
+      ctx.beginPath();
+      ctx.moveTo(cx,cy);
+      ctx.fillStyle = colors && colors[i] ? colors[i] : randomColor(i);
+      ctx.arc(cx,cy,r,ang,ang+a);
+      ctx.closePath();
+      ctx.fill();
+      ang += a;
+    });
+    // legend
+    const legX = 8, legY = 8;
+    ctx.textAlign='left';
+    labels.forEach((lab,i)=>{
+      const y = legY + i*18;
+      ctx.fillStyle = colors && colors[i] ? colors[i] : randomColor(i);
+      ctx.fillRect(legX, y, 12, 12);
+      ctx.fillStyle = '#9fb6ce';
+      ctx.fillText(`${lab} (${values[i]})`, legX+18, y+10);
+    });
+  }
+  function drawLine(ctx,labels,values){
+    const dpr = window.devicePixelRatio || 1;
+    const w = ctx.canvas.clientWidth, h = ctx.canvas.clientHeight;
+    ctx.canvas.width = w * dpr; ctx.canvas.height = h * dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    const pad = 28;
+    const maxv = Math.max(...values,1);
+    const minv = Math.min(...values);
+    const usableW = w - pad*2;
+    const usableH = h - pad*2;
+    ctx.strokeStyle = 'rgba(124,58,237,0.9)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    values.forEach((v,i)=>{
+      const x = pad + i*(usableW/(values.length-1 || 1));
+      const y = pad + usableH - ((v - minv)/(maxv-minv || 1))*usableH;
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    // fill
+    ctx.fillStyle = 'rgba(124,58,237,0.08)';
+    ctx.lineTo(pad + usableW, pad + usableH);
+    ctx.lineTo(pad, pad + usableH);
+    ctx.closePath();
+    ctx.fill();
+    // axes labels
+    ctx.fillStyle = '#9fb6ce';
+    ctx.font = '12px system-ui, Arial';
+    ctx.textAlign='center';
+    labels.forEach((lab,i)=>{
+      if(i%Math.ceil(labels.length/6)===0){
+        const x = pad + i*(usableW/(labels.length-1 || 1));
+        const txt = lab;
+        ctx.fillText(txt, x, h-6);
+      }
+    });
+  }
+  function drawHistogram(ctx,values,bins){
+    const dpr = window.devicePixelRatio || 1;
+    const w = ctx.canvas.clientWidth, h = ctx.canvas.clientHeight;
+    ctx.canvas.width = w * dpr; ctx.canvas.height = h * dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    if(values.length===0) return;
+    const minv = Math.min(...values), maxv = Math.max(...values);
+    const binSize = (maxv-minv)/bins || 1;
+    const counts = new Array(bins).fill(0);
+    values.forEach(v=>{
+      let idx = Math.floor((v-minv)/binSize);
+      if(idx<0) idx=0;
+      if(idx>=bins) idx=bins-1;
+      counts[idx]++;
+    });
+    const maxc = Math.max(...counts,1);
+    const pad = 8;
+    const barW = (w - pad*2)/bins * 0.8;
+    const gap = ((w - pad*2) - (barW*bins)) / (bins-1 || 1);
+    for(let i=0;i<bins;i++){
+      const x = pad + i*(barW + gap);
+      const barH = (counts[i]/maxc)*(h-28);
+      ctx.fillStyle = 'rgba(56,189,248,0.9)';
+      roundRect(ctx,x,h-12-barH,barW,barH,6);
+      ctx.fill();
+    }
+    // x labels
+    ctx.fillStyle = '#9fb6ce';
+    ctx.font = '12px system-ui, Arial';
+    ctx.textAlign='center';
+    for(let i=0;i<bins;i+=Math.max(1,Math.ceil(bins/6))){
+      const x = pad + i*(barW+gap) + barW/2;
+      const val = (minv + i*binSize);
+      ctx.fillText(Math.round(val), x, h-2);
+    }
+  }
+  function roundRect(ctx,x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+  }
+  function randomColor(i){
+    const colors = ['#38bdf8','#7c3aed','#f97316','#10b981','#ef4444','#f59e0b','#06b6d4','#a78bfa'];
+    return colors[i % colors.length];
+  }
+
+  // renderers
+  function renderSummary(stats){
+    totalRuns.textContent = stats.total;
+    successRate.textContent = stats.successRate + '%';
+    deliveredRate.textContent = stats.deliveredRate + '%';
+    avgRunDuration.textContent = stats.avgRunDuration;
+    avgSummary.textContent = stats.avgSummary;
+    avgResponse.textContent = stats.avgResponse;
+    avgArticles.textContent = stats.avgArticles;
+  }
+
+  function renderPlatformBreak(stats){
+    platformBreak.innerHTML = '';
+    const entries = Object.entries(stats.platforms).sort((a,b)=>b[1]-a[1]);
+    entries.forEach(([k,v])=>{
+      const el = document.createElement('div');
+      el.className='pill';
+      el.innerHTML = `<span class="small muted">${k}</span> <strong style="margin-left:6px">${v}</strong>`;
+      platformBreak.appendChild(el);
+    });
+    destBreak.innerHTML = '';
+    const dests = Object.entries(stats.dests).sort((a,b)=>b[1]-a[1]);
+    dests.forEach(([k,v])=>{
+      const el = document.createElement('div');
+      el.className='pill';
+      el.innerHTML = `<span class="small muted">${k}</span> <strong style="margin-left:6px">${v}</strong>`;
+      destBreak.appendChild(el);
+    });
+  }
+
+  function renderKeywordsAndSources(stats){
+    keywordsList.innerHTML = '';
+    const keys = Object.entries(stats.keywords).sort((a,b)=>b[1]-a[1]).slice(0,12);
+    keys.forEach(([k,v],i)=>{
+      const node = document.createElement('div');
+      node.className = 'item';
+      node.innerHTML = `<span class="dot" style="background:${randomColor(i)}"></span><div><div style="font-weight:600">${k}</div><div class="small muted">${v}</div></div>`;
+      keywordsList.appendChild(node);
+    });
+    sourceList.innerHTML = '';
+    const srcs = Object.entries(stats.sources).sort((a,b)=>b[1]-a[1]).slice(0,12);
+    srcs.forEach(([k,v],i)=>{
+      const node = document.createElement('div');
+      node.className='item';
+      node.innerHTML = `<div style="font-weight:600">${k || 'unknown'}</div><div class="small muted" style="margin-left:8px">${v}</div>`;
+      sourceList.appendChild(node);
+    });
+  }
+
+  function renderRecentTable(data){
+    recentTable.innerHTML = '';
+    const sorted = [...data];
+    const sortMode = sortSelect.value;
+    if(sortMode==='timestamp_desc') sorted.sort((a,b)=> (b._date||0) - (a._date||0));
+    if(sortMode==='timestamp_asc') sorted.sort((a,b)=> (a._date||0) - (b._date||0));
+    if(sortMode==='run_duration_desc') sorted.sort((a,b)=> (b.run_duration||0) - (a.run_duration||0));
+    if(sortMode==='run_duration_asc') sorted.sort((a,b)=> (a.run_duration||0) - (b.run_duration||0));
+    const top = sorted.slice(0,40);
+    top.forEach(r=>{
+      const tr = document.createElement('tr');
+      const ts = formatDateShort(r._date) || '';
+      const id = r.id || '';
+      const plat = r.platform || '';
+      const model = safeGet(r,'ollama_model') || safeGet(r,'ollama_summary_model') || '';
+      const run = (typeof r.run_duration === 'number') ? (r.run_duration.toFixed(2)) : (r.run_duration || '');
+      const succ = r.success ? '<span style="color:var(--success)">✓</span>' : '<span style="color:var(--danger)">✕</span>';
+      tr.innerHTML = `<td>${ts}</td><td title="${id}">${id.slice(0,30)}</td><td>${plat}</td><td title="${model}">${model.slice(0,18)}</td><td>${run}</td><td>${succ}</td>`;
+      recentTable.appendChild(tr);
+    });
+  }
+
+  function renderCharts(stats){
+    // runs per day - build timeseries from filtered rows
+    const days = Number(daysBack.value);
+    daysBackLabel.textContent = days + 'd';
+    const end = new Date(toDate.value ? new Date(toDate.value + 'T23:59:59') : new Date());
+    const start = new Date(end.getTime() - (days-1)*24*3600*1000);
+    const map = {};
+    for(let d = new Date(start); d<=end; d.setDate(d.getDate()+1)){
+      const key = d.toISOString().slice(0,10);
+      map[key]=0;
+    }
+    filtered.forEach(r=>{
+      if(!r._date) return;
+      const k = r._date.toISOString().slice(0,10);
+      if(k in map) map[k] = (map[k]||0)+1;
+    });
+    const labels = Object.keys(map);
+    const values = labels.map(l=>map[l]);
+    drawLine(ctxRuns, labels.map(l=>l.slice(5)), values);
+
+    // model bar
+    const mEntries = Object.entries(stats.models).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const mLabels = mEntries.map(e=>e[0]);
+    const mValues = mEntries.map(e=>e[1]);
+    drawBar(ctxModels, mLabels, mValues);
+
+    // dest pie
+    const dEntries = Object.entries(stats.dests).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const dLabels = dEntries.map(e=>e[0]);
+    const dValues = dEntries.map(e=>e[1]);
+    drawPie(ctxDest, dLabels, dValues);
+
+    // histogram
+    const bins = Number(histBins.value);
+    histBinsLabel.textContent = bins;
+    drawHistogram(ctxHist, stats.runDurations, bins);
+  }
+
+  // main render
+  function renderAll(){
+    applyFilters();
+    const stats = computeStats(filtered);
+    renderSummary(stats);
+    renderPlatformBreak(stats);
+    renderKeywordsAndSources(stats);
+    renderRecentTable(filtered);
+    renderCharts(stats);
+  }
+
+  // event wiring
+  [fromDate,toDate,platformFilter,modelFilter,statusFilter,deliveredFilter,textSearch,daysBack, histBins, sortSelect].forEach(elm=>{
+    elm.addEventListener('input', ()=> renderAll());
+    elm.addEventListener('change', ()=> renderAll());
+  });
+  refreshBtn.addEventListener('click', ()=> fetchData());
+  clearFilters.addEventListener('click', ()=>{
+    platformFilter.value=''; modelFilter.value=''; statusFilter.value=''; deliveredFilter.value=''; textSearch.value=''; sortSelect.value='timestamp_desc';
+    // reset dates to full range
+    if(rows.length){
+      const dates = rows.map(r=>r._date).filter(Boolean).sort((a,b)=>a-b);
+      if(dates.length){
+        fromDate.value = dates[0].toISOString().slice(0,10);
+        toDate.value = dates[dates.length-1].toISOString().slice(0,10);
+      }
+    }
+    renderAll();
+  });
+
+  downloadBtn.addEventListener('click', ()=>{
+    const blob = new Blob([JSON.stringify(filtered, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'ollama_filtered.json';
+    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  });
+
+  loadSampleBtn.addEventListener('click', ()=>{
+    // insert a small sample based on the example the user provided
+    const sample = {"id":"linkedin_pipeline_github_run_20260825_100852","timestamp":"2026-08-25T10:08:52.047168+00:00","module_name":"pipeline","platform":"linkedin","destination":"page","error":null,"error_source":null,"success":true,"delivered":true,"ollama_response_model_pull_duration":333,"ollama_summary_model_pull_duration":19,"ollama_model":"exaone-deep:7.8b","ollama_summary_model_duration":391.209748,"ollama_summary_model":"gemma3:latest","ollama_summary_length":24018,"ollama_summary_temperature":1,"ollama_response_model_duration":201.760502,"ollama_temperature":0.5297187261106229,"ollama_validation_attempts":1,"ollama_valid_json":true,"ollama_valid_title":true,"ollama_response_length":4880,"ollama_post_length":391,"ollama_title_length":9,"plain_prompt_length":1760,"article_source":"devto","articles_length":38832,"articles_count":3,"keywords_used":"deeplearning","keywords_failed":[],"run_duration":599.255737};
+    sample._date = new Date(sample.timestamp);
+    rows.unshift(sample);
+    parsedCount.textContent = rows.length;
+    populateFilters();
+    renderAll();
+  });
+
+  inspectRaw.addEventListener('click', ()=>{
+    alert(JSON.stringify(rows.slice(0,5), null, 2));
+  });
+
+  // initial fetch
+  await fetchData();
+
+  // responsiveness: redraw on resize
+  let redrawTO;
+  window.addEventListener('resize', ()=>{ clearTimeout(redrawTO); redrawTO = setTimeout(()=> renderCharts(computeStats(filtered)), 200) });
+
+})();
+</script>
+</body>
+</html>
