@@ -342,7 +342,7 @@
   // utils
   function safeGet(o,k){ return (o && (k in o)) ? o[k] : null; }
   function parseJSONL(text){
-    const lines = text.split('\\n');
+    const lines = text.split('\n');
     const out = [];
     for(let i=0;i<lines.length;i++){
       const l = lines[i].trim();
