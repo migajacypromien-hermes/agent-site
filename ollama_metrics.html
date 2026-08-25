@@ -826,6 +826,17 @@
   window.addEventListener('resize', ()=>{ clearTimeout(redrawTO); redrawTO = setTimeout(()=> renderCharts(computeStats(filtered)), 200) });
 
 })();
+
+  /*
+  Notes and behavior:
+    The page fetches the JSONL, parses each line (skips invalid lines), and stores parsed objects with a _date property.
+    Filters: date range, platform, model, success/failure, delivered, free-text search (searches several fields).
+    Interactive charts: runs-per-day (zoom via daysBack), top models bar chart, destination pie chart, run_duration histogram (bins adjustable).
+    Summary stats: total runs, success/delivered rates, average durations/lengths, top keywords and sources.
+    Recent table (top 40 filtered), sortable.
+    Download currently filtered data as JSON; "Load sample" injects sample entry for demo.
+    Works purely client-side with no external libraries.
+  */
 </script>
 </body>
 </html>
