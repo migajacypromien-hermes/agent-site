@@ -38,6 +38,7 @@
     .brand-name { font: 800 1.25rem var(--font); letter-spacing: -.04em; }
     .brand-name b { color: var(--cyan); }
     .top-actions { display: flex; align-items: center; gap: 10px; }
+    .theme-toggle { display: inline-flex; align-items: center; gap: 7px; }
     .back-link, .button { color: var(--muted); text-decoration: none; border: 1px solid var(--line); background: var(--panel-soft); border-radius: 8px; padding: 8px 12px; cursor: pointer; transition: .2s ease; }
     .back-link:hover, .button:hover { color: var(--text); border-color: rgba(0,242,254,.5); background: rgba(0,242,254,.08); }
     .button.primary { color: #02151d; border-color: var(--cyan); background: var(--cyan); font-weight: 700; }
@@ -52,6 +53,7 @@
     .status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; box-shadow: 0 0 10px currentColor; }
     .status.error { color: var(--red); border-color: rgba(251,113,133,.3); background: rgba(251,113,133,.08); }
     .panel { background: linear-gradient(145deg, rgba(16,25,41,.92), rgba(9,14,24,.86)); border: 1px solid var(--line-soft); border-radius: 14px; box-shadow: 0 18px 50px rgba(0,0,0,.25); }
+    .table-panel { overflow: visible; }
     .filters { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr) auto; align-items: end; gap: 13px; padding: 16px; }
     .field { display: grid; gap: 6px; }
     .field label { color: var(--muted); font: 700 .67rem var(--mono); letter-spacing: .1em; text-transform: uppercase; }
@@ -68,7 +70,7 @@
     .metric-label { color: var(--muted); font-size: .78rem; }
     .metric-value { margin-top: 7px; color: var(--cyan); font: 700 1.65rem var(--mono); }
     .metric-detail { margin-top: 4px; color: var(--faint); font-size: .72rem; }
-    .table-panel { overflow: hidden; }
+    .table-panel { overflow: visible; }
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; min-width: 650px; }
     th, td { padding: 11px 14px; border-bottom: 1px solid var(--line-soft); text-align: left; white-space: nowrap; }
@@ -99,6 +101,10 @@
     .tooltip { position: fixed; z-index: 5; display: none; max-width: 240px; padding: 8px 10px; pointer-events: none; color: var(--text); background: #101b2d; border: 1px solid rgba(0,242,254,.3); border-radius: 7px; box-shadow: 0 8px 25px rgba(0,0,0,.4); font: .7rem/1.45 var(--mono); }
     .keyword-table { min-width: 0; }
     .keyword-table th:last-child, .keyword-table td:last-child { text-align: right; }
+    .keyword-table th:nth-child(5), .keyword-table td:nth-child(5) { min-width: 110px; }
+    .column-help { position: relative; display: inline-block; cursor: help; border-bottom: 1px dotted var(--muted); }
+    .column-tooltip { position: fixed; z-index: 2147483647; display: none; width: 280px; padding: 9px 10px; color: var(--text); background: #101b2d; border: 1px solid rgba(0,242,254,.35); border-radius: 7px; box-shadow: 0 8px 25px rgba(0,0,0,.45); font: 11px/1.45 var(--font); font-weight: 400; letter-spacing: normal; text-transform: none; text-align: left; }
+    .column-tooltip::after { content: ''; position: absolute; left: 50%; top: 100%; border: 5px solid transparent; border-top-color: rgba(0,242,254,.35); transform: translateX(-50%); }
     .rank { display: inline-grid; width: 22px; height: 22px; place-items: center; margin-right: 8px; color: var(--cyan); border: 1px solid rgba(0,242,254,.2); border-radius: 5px; font: .68rem var(--mono); }
     .bar-cell { min-width: 170px; }
     .bar-track { display: flex; align-items: center; gap: 9px; }
@@ -109,11 +115,16 @@
     footer a { color: var(--muted); }
     .source-url { margin-top: 5px; color: var(--faint); font: .68rem var(--mono); overflow-wrap: anywhere; }
     .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+    body.light { --bg: #eef4f9; --panel: rgba(255,255,255,.9); --panel-strong: #fff; --panel-soft: rgba(15,23,42,.045); --line: rgba(15,23,42,.16); --line-soft: rgba(15,23,42,.09); --text: #172033; --muted: #52627a; --faint: #718096; --cyan: #087f91; --blue: #2563eb; --purple: #6d28d9; --green: #047857; --red: #be123c; --yellow: #b45309; background: radial-gradient(circle at 12% 0%, rgba(139,92,246,.16), transparent 30rem), radial-gradient(circle at 100% 55%, rgba(0,140,160,.10), transparent 32rem), var(--bg); }
+    body.light .panel { background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(244,248,252,.9)); box-shadow: 0 14px 35px rgba(15,23,42,.10); }
+    body.light select { background: #fff; }
+    body.light .brand-mark { box-shadow: 0 0 18px rgba(0,127,145,.16); }
     @media (max-width: 980px) { .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .chart-grid { grid-template-columns: 1fr; } }
     @media (max-width: 650px) { .shell { width: min(100% - 24px, 1440px); padding-top: 12px; } .topbar, .section-head { align-items: flex-start; flex-direction: column; } .top-actions { width: 100%; justify-content: space-between; } .filters { grid-template-columns: 1fr; } .filter-note { grid-column: auto; } .metric-grid { grid-template-columns: 1fr 1fr; gap: 8px; } .metric { padding: 12px; } .metric-value { font-size: 1.25rem; } canvas { height: 245px; } }
   </style>
 </head>
 <body>
+
   <div class="shell">
     <header class="topbar">
       <a class="brand" href="index.html" aria-label="VoytecU overview">
@@ -121,6 +132,7 @@
       </a>
       <div class="top-actions">
         <span class="status" id="loadStatus"><i class="status-dot"></i><span>LOADING FEED</span></span>
+        <button class="button theme-toggle" id="themeToggle" type="button" aria-pressed="false">☀️ <span>Light mode</span></button>
         <a class="back-link" href="index.html">← Overview</a>
       </div>
     </header>
@@ -183,8 +195,8 @@
         <div class="section-head"><div><span class="section-kicker">failure vocabulary</span><h2 id="keywords-heading">Failed keywords</h2></div><p>Aggregated and sorted from most failures to least.</p></div>
         <div class="panel table-panel table-wrap">
           <table class="keyword-table">
-            <thead><tr><th>Rank</th><th>Keyword</th><th>Failed occurrences</th><th>Relative volume</th></tr></thead>
-            <tbody id="keywordsBody"><tr><td class="empty" colspan="4">Loading keyword failures…</td></tr></tbody>
+            <thead><tr><th>Rank</th><th>Keyword</th><th>Failed occurrences</th><th>Success occurrences</th><th><span class="column-help" tabindex="0" aria-describedby="relativeVolumeHelp">Relative volume</span></th><th>Failure rate</th></tr></thead>
+            <tbody id="keywordsBody"><tr><td class="empty" colspan="6">Loading keyword failures…</td></tr></tbody>
           </table>
         </div>
       </section>
@@ -196,6 +208,7 @@
     </footer>
   </div>
   <div class="tooltip" id="tooltip" role="status"></div>
+  <div class="column-tooltip" id="relativeVolumeHelp" role="tooltip">Failure-weighted volume: (failure rate × failed occurrences ÷ highest failed-keyword occurrences) × 100. It compares each keyword’s weighted failure impact with the highest failed keyword.</div>
 
   <script>
     (() => {
@@ -317,20 +330,42 @@
         body.innerHTML = entries.map(([model, group]) => `<tr><td><strong>${esc(model)}</strong></td><td>${[...group.roles].join(' + ')}</td><td class="number">${format(average(group.response))} ms</td><td class="number">${format(average(group.summary))} ms</td><td class="number">${group.samples}</td></tr>`).join('');
       }
 
+      function keywordElements(value) {
+        if (Array.isArray(value)) return value.flatMap(keywordElements);
+        if (!hasValue(value)) return [];
+        return [String(value).trim()].filter(Boolean);
+      }
+
+      function keywordOccurrences(row, keyword) {
+        return keywordElements(row.keywords_used).filter(value => value.trim().toLowerCase() === keyword).length;
+      }
+
       function renderKeywords() {
         const counts = new Map();
         state.filtered.forEach(row => {
-          const failed = Array.isArray(row.keywords_failed) ? row.keywords_failed : hasValue(row.keywords_failed) ? [row.keywords_failed] : [];
-          failed.forEach(keyword => {
-            const key = String(keyword).trim();
-            if (key) counts.set(key, (counts.get(key) || 0) + 1);
+          keywordElements(row.keywords_failed).forEach(value => {
+            const keyword = value.toLowerCase();
+            counts.set(keyword, (counts.get(keyword) || 0) + 1);
           });
         });
-        const entries = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-        const max = entries[0]?.[1] || 1;
+        const keywordStats = [...counts.entries()].map(([keyword, count]) => {
+          const total = state.filtered.reduce((sum, row) => sum + keywordOccurrences(row, keyword), 0);
+          const failedOccurrences = count;
+          const successOccurrences = Math.max(0, total - count);
+          return { keyword, failedOccurrences, successOccurrences, total, sortValue: successOccurrences - failedOccurrences };
+        });
+        keywordStats.sort((a, b) => a.sortValue - b.sortValue || b.failedOccurrences - a.failedOccurrences || a.keyword.localeCompare(b.keyword));
+        const highestFailedOccurrences = Math.max(...keywordStats.map(item => item.failedOccurrences), 1);
         const body = $('keywordsBody');
-        if (!entries.length) { body.innerHTML = '<tr><td class="empty" colspan="4">No failed keywords in the current selection.</td></tr>'; return; }
-        body.innerHTML = entries.map(([keyword, count], index) => `<tr><td><span class="rank">${index + 1}</span></td><td><strong>${esc(keyword)}</strong></td><td class="number bad">${count}</td><td class="bar-cell"><div class="bar-track"><div class="bar"><i style="width:${(count / max) * 100}%"></i></div><b>${Math.round((count / max) * 100)}%</b></div></td></tr>`).join('');
+        if (!keywordStats.length) { body.innerHTML = '<tr><td class="empty" colspan="6">No failed keywords in the current selection.</td></tr>'; return; }
+        body.innerHTML = keywordStats.map((item, index) => {
+          const { keyword, failedOccurrences, successOccurrences, total } = item;
+          const failureRate = total ? Math.min(1, failedOccurrences / total) : 1;
+          const relativeVolume = (failureRate * failedOccurrences / highestFailedOccurrences) * 100;
+          const relativeBarWidth = Math.min(100, relativeVolume);
+          const displayKeyword = state.filtered.flatMap(row => keywordElements(row.keywords_failed)).find(value => value.toLowerCase() === keyword) || keyword;
+          return `<tr><td><span class="rank">${index + 1}</span></td><td><strong>${esc(displayKeyword)}</strong></td><td class="number bad">${failedOccurrences}</td><td class="number good">${successOccurrences}</td><td class="bar-cell"><div class="bar-track"><div class="bar"><i style="width:${relativeBarWidth}%"></i></div><b>${relativeVolume.toLocaleString(undefined, { maximumFractionDigits: 1 })}%</b></div></td><td class="number ${failureRate >= .5 ? 'bad' : 'good'}">${percent(failureRate)}</td></tr>`;
+        }).join('');
       }
 
       function setupCanvas(canvas) {
@@ -425,11 +460,41 @@
         }
       }
 
+      const THEME_KEY = 'voytecu-ollama-metrics-theme';
+      const themeToggle = $('themeToggle');
+      function applyTheme(theme) {
+        const light = theme === 'light';
+        document.body.classList.toggle('light', light);
+        themeToggle.setAttribute('aria-pressed', String(light));
+        themeToggle.innerHTML = `${light ? '🌙' : '☀️'} <span>${light ? 'Dark mode' : 'Light mode'}</span>`;
+      }
+      applyTheme(localStorage.getItem(THEME_KEY) || 'dark');
+      themeToggle.addEventListener('click', () => {
+        const next = document.body.classList.contains('light') ? 'dark' : 'light';
+        localStorage.setItem(THEME_KEY, next);
+        applyTheme(next);
+      });
+
       $('sourceFilter').addEventListener('change', applyFilters);
       $('countFilter').addEventListener('change', applyFilters);
       $('clearFilters').addEventListener('click', () => { $('sourceFilter').value = ''; $('countFilter').value = ''; applyFilters(); });
       ['lengthChart', 'errorLengthChart'].forEach(id => { const canvas = $(id); canvas.addEventListener('mousemove', event => showTooltip(canvas, event)); canvas.addEventListener('mouseleave', () => { $('tooltip').style.display = 'none'; }); });
-      let resizeTimer; window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(renderCharts, 120); });
+      const relativeVolumeHelp = $('relativeVolumeHelp');
+      const relativeVolumeHeader = document.querySelector('.column-help');
+      function showRelativeVolumeHelp() {
+        const rect = relativeVolumeHeader.getBoundingClientRect();
+        relativeVolumeHelp.style.display = 'block';
+        const left = Math.max(10, Math.min(window.innerWidth - 290, rect.left + rect.width / 2 - 140));
+        const top = Math.max(10, rect.top - relativeVolumeHelp.offsetHeight - 10);
+        relativeVolumeHelp.style.left = `${left}px`;
+        relativeVolumeHelp.style.top = `${top}px`;
+      }
+      function hideRelativeVolumeHelp() { relativeVolumeHelp.style.display = 'none'; }
+      relativeVolumeHeader.addEventListener('mouseenter', showRelativeVolumeHelp);
+      relativeVolumeHeader.addEventListener('mouseleave', hideRelativeVolumeHelp);
+      relativeVolumeHeader.addEventListener('focus', showRelativeVolumeHelp);
+      relativeVolumeHeader.addEventListener('blur', hideRelativeVolumeHelp);
+      let resizeTimer; window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { renderCharts(); if (relativeVolumeHelp.style.display === 'block') showRelativeVolumeHelp(); }, 120); });
       loadData();
     })();
   </script>
