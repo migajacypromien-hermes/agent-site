@@ -105,6 +105,7 @@
     .keyword-erased td { color: var(--faint); text-decoration: line-through; text-decoration-thickness: 1px; opacity: .72; }
     .keyword-erased td:first-child, .keyword-erased td:nth-child(3), .keyword-erased td:nth-child(4), .keyword-erased td:nth-child(5), .keyword-erased td:nth-child(6) { text-decoration: none; }
     .keyword-erased .keyword-erased-label { display: inline-block; margin-left: 7px; color: var(--yellow); font: 700 .62rem var(--mono); letter-spacing: .06em; text-decoration: none; text-transform: uppercase; }
+    .keyword-erased .keyword-erased-run { color: var(--muted); }
     .column-help { position: relative; display: inline-block; cursor: help; border-bottom: 1px dotted var(--muted); }
     .column-tooltip { position: fixed; z-index: 2147483647; display: none; width: 280px; padding: 9px 10px; color: var(--text); background: #101b2d; border: 1px solid rgba(0,242,254,.35); border-radius: 7px; box-shadow: 0 8px 25px rgba(0,0,0,.45); font: 11px/1.45 var(--font); font-weight: 400; letter-spacing: normal; text-transform: none; text-align: left; }
     .column-tooltip::after { content: ''; position: absolute; left: 50%; top: 100%; border: 5px solid transparent; border-top-color: rgba(0,242,254,.35); transform: translateX(-50%); }
@@ -221,8 +222,10 @@
       const state = { rows: [], filtered: [], points: new Map() };
       const colors = ['#00f2fe', '#a78bfa', '#60a5fa', '#34d399', '#fbbf24', '#fb7185', '#f97316', '#c084fc'];
       // Historical keyword failures remain visible, but these phrases are no longer active upstream.
-      const ERASED_KEYWORDS = ['public reaction to AI'];
-      const erasedKeywordSet = new Set(ERASED_KEYWORDS.map(keyword => keyword.trim().toLowerCase()));
+      const ERASED_KEYWORDS = [
+        { keyword: 'public reaction to AI', erasedAfterRun: 164 }
+      ];
+      const erasedKeywordMap = new Map(ERASED_KEYWORDS.map(item => [item.keyword.trim().toLowerCase(), item]));
 
       const number = value => {
         if (typeof value === 'number' && Number.isFinite(value)) return value;
@@ -370,8 +373,10 @@
           const relativeVolume = (failureRate * failedOccurrences / highestFailedOccurrences) * 100;
           const relativeBarWidth = Math.min(100, relativeVolume);
           const displayKeyword = state.filtered.flatMap(row => keywordElements(row.keywords_failed)).find(value => value.toLowerCase() === keyword) || keyword;
-          const isErased = erasedKeywordSet.has(keyword);
-          return `<tr class="${isErased ? 'keyword-erased' : ''}"><td><span class="rank">${index + 1}</span></td><td><strong title="${isErased ? 'This keyword was erased from the upstream keyword list.' : ''}">${esc(displayKeyword)}</strong>${isErased ? '<span class="keyword-erased-label">erased</span>' : ''}</td><td class="number bad">${failedOccurrences}</td><td class="number good">${successOccurrences}</td><td class="bar-cell"><div class="bar-track"><div class="bar"><i style="width:${relativeBarWidth}%"></i></div><b>${relativeVolume.toLocaleString(undefined, { maximumFractionDigits: 1 })}%</b></div></td><td class="number ${failureRate >= .5 ? 'bad' : 'good'}">${percent(failureRate)}</td></tr>`;
+          const erasedInfo = erasedKeywordMap.get(keyword);
+          const isErased = Boolean(erasedInfo);
+          const erasedLabel = isErased ? `<span class="keyword-erased-label">erased <span class="keyword-erased-run">· run ${esc(erasedInfo.erasedAfterRun)}</span></span>` : '';
+          return `<tr class="${isErased ? 'keyword-erased' : ''}"><td><span class="rank">${index + 1}</span></td><td><strong title="${isErased ? `This keyword was erased after run ${erasedInfo.erasedAfterRun}.` : ''}">${esc(displayKeyword)}</strong>${erasedLabel}</td><td class="number bad">${failedOccurrences}</td><td class="number good">${successOccurrences}</td><td class="bar-cell"><div class="bar-track"><div class="bar"><i style="width:${relativeBarWidth}%"></i></div><b>${relativeVolume.toLocaleString(undefined, { maximumFractionDigits: 1 })}%</b></div></td><td class="number ${failureRate >= .5 ? 'bad' : 'good'}">${percent(failureRate)}</td></tr>`;
         }).join('');
       }
 
