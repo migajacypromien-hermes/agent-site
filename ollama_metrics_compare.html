@@ -161,7 +161,7 @@
         <div class="metric-grid">
           <article class="panel metric"><div class="metric-label">Filtered runs</div><div class="metric-value" id="runCount">—</div><div class="metric-detail" id="runCountDetail">of — loaded rows</div></article>
           <article class="panel metric"><div class="metric-label">Success rate</div><div class="metric-value" id="successRate">—</div><div class="metric-detail">success = true</div></article>
-          <article class="panel metric"><div class="metric-label">Error rate</div><div class="metric-value" id="errorRate">—</div><div class="metric-detail" id="errorCount">— error rows</div></article>
+          <article class="panel metric"><div class="metric-label">Model error rate</div><div class="metric-value" id="errorRate">—</div><div class="metric-detail" id="errorCount">— model-error rows</div></article>
           <article class="panel metric"><div class="metric-label">Models compared</div><div class="metric-value" id="modelCount">—</div><div class="metric-detail">response models in selection</div></article>
         </div>
       </section>
@@ -170,7 +170,7 @@
         <div class="section-head"><div><span class="section-kicker">grouped by response model</span><h2 id="comparison-heading">Performance comparison</h2></div><p>Durations are shown in seconds; lengths are characters.</p></div>
         <div class="panel table-panel table-wrap">
           <table>
-            <thead><tr><th>Model</th><th>Runs</th><th>Avg response duration</th><th>Avg run duration</th><th>Avg error rate</th><th>Avg response length</th></tr></thead>
+            <thead><tr><th>Model</th><th>Runs</th><th>Avg response duration</th><th>Avg run duration</th><th>Model error rate</th><th>Avg response length</th></tr></thead>
             <tbody id="comparisonBody"><tr><td class="empty" colspan="6">Loading metrics…</td></tr></tbody>
           </table>
         </div>
@@ -189,9 +189,9 @@
       <section class="section" aria-labelledby="charts-heading">
         <div class="section-head"><div><span class="section-kicker">relationships & failure topology</span><h2 id="charts-heading">Content and error charts</h2></div><p id="chartMeta">Charts use the current source and article-count selection.</p></div>
         <div class="chart-grid">
-          <article class="panel chart-card"><div class="chart-title"><h3>Articles length ↔ Ollama summary length</h3><span>hover points for row details</span></div><canvas id="lengthChart" aria-label="Scatter plot of articles length and Ollama summary length"></canvas><div class="legend"><span><i></i>all filtered runs</span><span><i class="error"></i>runs with errors</span></div></article>
-          <article class="panel chart-card compact"><div class="chart-title"><h3>Error sources</h3><span>count of error rows</span></div><div id="errorSourceList" class="error-source-list" aria-live="polite"><div class="empty">Loading error sources…</div></div></article>
-          <article class="panel chart-card"><div class="chart-title"><h3>Errors ↔ article length</h3><span>error rate by length bin</span></div><canvas id="errorLengthChart" aria-label="Chart of error rate by article length"></canvas><div class="legend"><span><i class="error"></i>error rate</span><span id="binLegend">bins contain filtered runs</span></div></article>
+          <article class="panel chart-card"><div class="chart-title"><h3>Articles length ↔ Ollama summary length</h3><span>hover points for row details</span></div><canvas id="lengthChart" aria-label="Scatter plot of articles length and Ollama summary length"></canvas><div class="legend"><span><i></i>all filtered runs</span><span><i class="error"></i>model errors</span></div></article>
+          <article class="panel chart-card compact"><div class="chart-title"><h3>Error sources</h3><span>all recorded pipeline errors</span></div><div id="errorSourceList" class="error-source-list" aria-live="polite"><div class="empty">Loading error sources…</div></div></article>
+          <article class="panel chart-card"><div class="chart-title"><h3>Model errors ↔ article length</h3><span>model-error rate by length bin</span></div><canvas id="errorLengthChart" aria-label="Chart of model error rate by article length"></canvas><div class="legend"><span><i class="error"></i>model error rate</span><span id="binLegend">bins contain filtered runs</span></div></article>
         </div>
       </section>
 
@@ -242,8 +242,16 @@
       const percent = (value, digits = 1) => value === null || value === undefined || !Number.isFinite(value) ? '—' : `${(value * 100).toLocaleString(undefined, { maximumFractionDigits: digits })}%`;
       const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char]);
       const modelOf = row => row.ollama_model || row.model || 'Unknown model';
-      const isError = row => (row.error !== null && row.error !== undefined && String(row.error).trim() !== '') || row.success === false;
+      const ARTICLE_FETCH_ERROR_SOURCES = new Set(['article_fetch_retries', 'article_fetch_both_sources', 'devto_fetch_full_details']);
       const hasValue = value => value !== null && value !== undefined && value !== '';
+      const normalizedSuccess = row => row.success === true || String(row.success).toLowerCase() === 'true' ? true : row.success === false || String(row.success).toLowerCase() === 'false' ? false : null;
+      const errorSourceOf = row => hasValue(row.error_source) ? String(row.error_source).trim() : '';
+      const isPipelineError = row => row.error === true || hasValue(row.error_source);
+      const isModelRun = row => {
+        const success = normalizedSuccess(row);
+        return !(success === null && ARTICLE_FETCH_ERROR_SOURCES.has(errorSourceOf(row)));
+      };
+      const isModelError = row => isModelRun(row) && normalizedSuccess(row) !== true;
       const unique = values => [...new Set(values.filter(hasValue).map(String))];
 
       function parseJSONL(text) {
@@ -295,14 +303,15 @@
 
       function renderSelection() {
         const rows = state.filtered;
-        const errors = rows.filter(isError).length;
-        const successes = rows.filter(row => row.success === true).length;
+        const modelRuns = rows.filter(isModelRun);
+        const errors = modelRuns.filter(isModelError).length;
+        const successes = modelRuns.filter(row => normalizedSuccess(row) === true).length;
         $('runCount').textContent = rows.length.toLocaleString();
         $('runCountDetail').textContent = `of ${state.rows.length.toLocaleString()} loaded rows`;
-        $('successRate').textContent = rows.length ? percent(successes / rows.length) : '—';
-        $('errorRate').textContent = rows.length ? percent(errors / rows.length) : '—';
-        $('errorCount').textContent = `${errors.toLocaleString()} error row${errors === 1 ? '' : 's'}`;
-        $('modelCount').textContent = new Set(rows.map(modelOf)).size.toLocaleString();
+        $('successRate').textContent = modelRuns.length ? percent(successes / modelRuns.length) : '—';
+        $('errorRate').textContent = modelRuns.length ? percent(errors / modelRuns.length) : '—';
+        $('errorCount').textContent = `${errors.toLocaleString()} model-error row${errors === 1 ? '' : 's'} / ${modelRuns.length.toLocaleString()} model runs`;
+        $('modelCount').textContent = new Set(modelRuns.map(modelOf)).size.toLocaleString();
         const source = $('sourceFilter').value || 'all sources';
         const count = $('countFilter').value ? `${$('countFilter').value} articles` : 'all article counts';
         $('selectionMeta').textContent = `${source} · ${count}`;
@@ -310,10 +319,10 @@
 
       function renderComparison() {
         const body = $('comparisonBody');
-        const groups = groupRows(state.filtered);
+        const groups = groupRows(state.filtered.filter(isModelRun));
         if (!groups.length) { body.innerHTML = '<tr><td class="empty" colspan="6">No rows match the current filters.</td></tr>'; return; }
         body.innerHTML = groups.map(([model, rows]) => {
-          const errors = rows.filter(isError).length;
+          const errors = rows.filter(isModelError).length;
           return `<tr><td><strong>${esc(model)}</strong></td><td class="number">${rows.length}</td><td class="number">${format(average(rows.map(row => row.ollama_response_model_duration)))} s</td><td class="number">${format(average(rows.map(row => row.run_duration)))} s</td><td class="number ${errors ? 'bad' : 'good'}">${percent(errors / rows.length)}</td><td class="number">${format(average(rows.map(row => row.ollama_response_length)), 0)}</td></tr>`;
         }).join('');
       }
@@ -413,7 +422,7 @@
 
       function drawLengthChart() {
         const canvas = $('lengthChart'); const { ctx, width, height } = setupCanvas(canvas); const frame = chartFrame(ctx, width, height, 'articles_length', 'ollama_summary_length');
-        const points = state.filtered.map(row => ({ row, x: number(row.articles_length), y: number(row.ollama_summary_length), error: isError(row) })).filter(point => point.x !== null && point.y !== null);
+        const points = state.filtered.filter(isModelRun).map(row => ({ row, x: number(row.articles_length), y: number(row.ollama_summary_length), error: isModelError(row) })).filter(point => point.x !== null && point.y !== null);
         if (!points.length) { drawEmpty(ctx, width, height, 'No length data for this selection.'); canvas._points = []; return; }
         const maxX = Math.max(...points.map(point => point.x), 1); const maxY = Math.max(...points.map(point => point.y), 1); drawGrid(ctx, frame, width, height, maxX, maxY);
         canvas._points = points.map(point => ({ ...point, px: frame.left + point.x / maxX * (width - frame.left - frame.right), py: height - frame.bottom - point.y / maxY * (height - frame.top - frame.bottom) }));
@@ -422,8 +431,8 @@
 
       function renderErrorSourceList() {
         const counts = new Map();
-        state.filtered.filter(isError).forEach(row => {
-          const source = hasValue(row.error_source) ? String(row.error_source) : 'unknown';
+        state.filtered.filter(isPipelineError).forEach(row => {
+          const source = errorSourceOf(row) || 'unknown';
           counts.set(source, (counts.get(source) || 0) + 1);
         });
         const entries = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
@@ -434,8 +443,8 @@
       }
 
       function drawErrorLengthChart() {
-        const canvas = $('errorLengthChart'); const { ctx, width, height } = setupCanvas(canvas); const frame = chartFrame(ctx, width, height, 'articles_length', 'error rate');
-        const rows = state.filtered.map(row => ({ row, x: number(row.articles_length), error: isError(row) })).filter(point => point.x !== null); if (!rows.length) { drawEmpty(ctx, width, height, 'No article-length data for this selection.'); canvas._points = []; return; }
+        const canvas = $('errorLengthChart'); const { ctx, width, height } = setupCanvas(canvas); const frame = chartFrame(ctx, width, height, 'articles_length', 'model error rate');
+        const rows = state.filtered.filter(isModelRun).map(row => ({ row, x: number(row.articles_length), error: isModelError(row) })).filter(point => point.x !== null); if (!rows.length) { drawEmpty(ctx, width, height, 'No article-length data for this selection.'); canvas._points = []; return; }
         const min = Math.min(...rows.map(point => point.x)); const max = Math.max(...rows.map(point => point.x)); const bins = Math.min(10, Math.max(1, rows.length)); const size = (max - min) / bins || 1; const groups = Array.from({ length: bins }, (_, index) => ({ low: min + index * size, high: index === bins - 1 ? max : min + (index + 1) * size, total: 0, errors: 0 }));
         rows.forEach(point => { const index = Math.min(bins - 1, Math.floor((point.x - min) / size)); groups[index].total++; if (point.error) groups[index].errors++; });
         const maxX = max || 1; drawGrid(ctx, frame, width, height, maxX, 1, value => percent(value), min); const plotted = groups.filter(group => group.total).map(group => ({ x: (group.low + group.high) / 2, y: group.errors / group.total, label: `${tick(group.low)}–${tick(group.high)}`, total: group.total, errors: group.errors }));
