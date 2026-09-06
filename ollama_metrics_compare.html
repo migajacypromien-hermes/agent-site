@@ -170,7 +170,7 @@
         <div class="section-head"><div><span class="section-kicker">grouped by response model</span><h2 id="comparison-heading">Performance comparison</h2></div><p>Durations are shown in seconds; lengths are characters.</p></div>
         <div class="panel table-panel table-wrap">
           <table>
-            <thead><tr><th>Model</th><th>Runs</th><th>Avg response duration</th><th>Avg run duration</th><th>Model error rate</th><th>Avg response length</th></tr></thead>
+            <thead><tr><th>Model</th><th><span class="column-help" tabindex="0" aria-describedby="runsHelp">Runs</span></th><th>Avg response duration</th><th>Avg run duration</th><th>Model error rate</th><th>Avg response length</th></tr></thead>
             <tbody id="comparisonBody"><tr><td class="empty" colspan="6">Loading metrics…</td></tr></tbody>
           </table>
         </div>
@@ -213,6 +213,7 @@
   </div>
   <div class="tooltip" id="tooltip" role="status"></div>
   <div class="column-tooltip" id="relativeVolumeHelp" role="tooltip">Failure-weighted volume: (failure rate × failed occurrences ÷ highest failed-keyword occurrences) × 100. It compares each keyword’s weighted failure impact with the highest failed keyword.</div>
+  <div class="column-tooltip" id="runsHelp" role="tooltip">Runs counts model runs for this model. It can be lower than total pipeline runs because article-fetch errors may happen before the model runs and are excluded from model metrics.</div>
 
   <script>
     (() => {
@@ -501,22 +502,27 @@
       $('countFilter').addEventListener('change', applyFilters);
       $('clearFilters').addEventListener('click', () => { $('sourceFilter').value = ''; $('countFilter').value = ''; applyFilters(); });
       ['lengthChart', 'errorLengthChart'].forEach(id => { const canvas = $(id); canvas.addEventListener('mousemove', event => showTooltip(canvas, event)); canvas.addEventListener('mouseleave', () => { $('tooltip').style.display = 'none'; }); });
-      const relativeVolumeHelp = $('relativeVolumeHelp');
-      const relativeVolumeHeader = document.querySelector('.column-help');
-      function showRelativeVolumeHelp() {
-        const rect = relativeVolumeHeader.getBoundingClientRect();
-        relativeVolumeHelp.style.display = 'block';
+      const popovers = [
+        { trigger: document.querySelector('.keyword-table .column-help'), panel: $('relativeVolumeHelp') },
+        { trigger: document.querySelector('#comparisonBody')?.closest('table')?.querySelector('thead .column-help'), panel: $('runsHelp') }
+      ];
+      function showPopover(popover) {
+        const rect = popover.trigger.getBoundingClientRect();
+        popover.panel.style.display = 'block';
         const left = Math.max(10, Math.min(window.innerWidth - 290, rect.left + rect.width / 2 - 140));
-        const top = Math.max(10, rect.top - relativeVolumeHelp.offsetHeight - 10);
-        relativeVolumeHelp.style.left = `${left}px`;
-        relativeVolumeHelp.style.top = `${top}px`;
+        const top = Math.max(10, rect.top - popover.panel.offsetHeight - 10);
+        popover.panel.style.left = `${left}px`;
+        popover.panel.style.top = `${top}px`;
       }
-      function hideRelativeVolumeHelp() { relativeVolumeHelp.style.display = 'none'; }
-      relativeVolumeHeader.addEventListener('mouseenter', showRelativeVolumeHelp);
-      relativeVolumeHeader.addEventListener('mouseleave', hideRelativeVolumeHelp);
-      relativeVolumeHeader.addEventListener('focus', showRelativeVolumeHelp);
-      relativeVolumeHeader.addEventListener('blur', hideRelativeVolumeHelp);
-      let resizeTimer; window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { renderCharts(); if (relativeVolumeHelp.style.display === 'block') showRelativeVolumeHelp(); }, 120); });
+      function hidePopover(popover) { popover.panel.style.display = 'none'; }
+      popovers.forEach(popover => {
+        if (!popover.trigger) return;
+        popover.trigger.addEventListener('mouseenter', () => showPopover(popover));
+        popover.trigger.addEventListener('mouseleave', () => hidePopover(popover));
+        popover.trigger.addEventListener('focus', () => showPopover(popover));
+        popover.trigger.addEventListener('blur', () => hidePopover(popover));
+      });
+      let resizeTimer; window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { renderCharts(); popovers.forEach(popover => { if (popover.trigger && popover.panel.style.display === 'block') showPopover(popover); }); }, 120); });
       loadData();
     })();
   </script>
