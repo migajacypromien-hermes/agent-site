@@ -204,12 +204,19 @@
           </table>
         </div>
       </section>
+
+      <section class="section" aria-labelledby="successful-keywords-heading">
+        <div class="section-head"><div><span class="section-kicker">success vocabulary</span><h2 id="successful-keywords-heading">Most successful keywords</h2></div><p>Keywords used most often with no recorded failures in the current selection.</p></div>
+        <div class="panel table-panel table-wrap">
+          <table class="keyword-table">
+            <thead><tr><th>Rank</th><th>Keyword</th><th>Successful occurrences</th></tr></thead>
+            <tbody id="successfulKeywordsBody"><tr><td class="empty" colspan="3">Loading successful keywords…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
     </main>
 
     <footer>
-      <div>Client-side dashboard · <a href="ollama_copilot_metrics.html">Open general Ollama dashboard</a> · <a href="index.html">VoytecU overview</a></div>
-      <div class="source-url">Data source: https://raw.githubusercontent.com/voytecu314/public_ollama_link_metrics/main/linkedin_posts_metrics.jsonl</div>
-    </footer>
   </div>
   <div class="tooltip" id="tooltip" role="status"></div>
   <div class="column-tooltip" id="relativeVolumeHelp" role="tooltip">Failure-weighted volume: (failure rate × failed occurrences ÷ highest failed-keyword occurrences) × 100. It compares each keyword’s weighted failure impact with the highest failed keyword.</div>
@@ -290,6 +297,7 @@
         renderComparison();
         renderCharts();
         renderKeywords();
+        renderSuccessfulKeywords();
       }
 
       function groupRows(rows) {
@@ -391,6 +399,34 @@
         }).join('');
       }
 
+      function renderSuccessfulKeywords() {
+        const usedCounts = new Map();
+        const failedCounts = new Map();
+        const displayValues = new Map();
+        state.filtered.forEach(row => {
+          keywordElements(row.keywords_used).forEach(value => {
+            const normalized = value.trim().toLowerCase();
+            if (!normalized) return;
+            usedCounts.set(normalized, (usedCounts.get(normalized) || 0) + 1);
+            if (!displayValues.has(normalized)) displayValues.set(normalized, value.trim());
+          });
+          keywordElements(row.keywords_failed).forEach(value => {
+            const normalized = value.trim().toLowerCase();
+            if (!normalized) return;
+            failedCounts.set(normalized, (failedCounts.get(normalized) || 0) + 1);
+          });
+        });
+        const successfulKeywords = [...usedCounts.entries()]
+          .filter(([keyword]) => !failedCounts.get(keyword))
+          .map(([keyword, successOccurrences]) => ({ keyword, successOccurrences }))
+          .sort((a, b) => b.successOccurrences - a.successOccurrences || a.keyword.localeCompare(b.keyword));
+        const body = $('successfulKeywordsBody');
+        if (!successfulKeywords.length) {
+          body.innerHTML = '<tr><td class="empty" colspan="3">No keywords were used successfully in the current selection.</td></tr>';
+          return;
+        }
+        body.innerHTML = successfulKeywords.map((item, index) => `<tr><td><span class="rank">${index + 1}</span></td><td><strong>${esc(displayValues.get(item.keyword) || item.keyword)}</strong></td><td class="number good">${item.successOccurrences}</td></tr>`).join('');
+      }
       function setupCanvas(canvas) {
         const dpr = window.devicePixelRatio || 1;
         const rect = canvas.getBoundingClientRect();
