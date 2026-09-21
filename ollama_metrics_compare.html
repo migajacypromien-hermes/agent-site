@@ -232,7 +232,8 @@
       // Historical keyword failures remain visible, but these phrases are no longer active upstream.
       const ERASED_KEYWORDS = [
         { keyword: 'public reaction to AI', erasedAfterRun: 164 },
-        { keyword: 'AI bias', erasedAfterRun: 174 }
+        { keyword: 'AI bias', erasedAfterRun: 174 },
+        { keyword: 'people afraid of AI', erasedAfterRun: 202},
       ];
       const erasedKeywordMap = new Map(ERASED_KEYWORDS.map(item => [item.keyword.trim().toLowerCase(), item]));
 
