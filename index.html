@@ -11,7 +11,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Browser telemetry console */
+        .primary-nav-link{color:var(--text-secondary);text-decoration:none;font:600 .66rem var(--font-mono);letter-spacing:1px;padding:8px 9px;border-radius:6px}.primary-nav-link:hover,.primary-nav-link:focus-visible{color:var(--accent-cyan);background:rgba(0,242,254,.07);outline:2px solid rgba(0,242,254,.45);outline-offset:2px}@media(max-width:820px){.nav-links{flex-wrap:wrap;justify-content:flex-end;gap:5px}.primary-nav-link{font-size:.58rem;padding:7px 5px}} /* Browser telemetry console */
         .metadata-dashboard { margin-top: 56px; position: relative; }
         .metadata-dashboard::before { content: ''; position: absolute; inset: 0 -12px; pointer-events: none; background: linear-gradient(90deg, transparent, rgba(0,242,254,.035), transparent); border-top: 1px solid rgba(0,242,254,.12); border-bottom: 1px solid rgba(139,92,246,.08); }
         .metadata-head { position: relative; display:flex; justify-content:space-between; gap:20px; align-items:flex-end; margin-bottom:20px; padding: 28px 0 4px; }
@@ -55,7 +55,7 @@
                 <span class="logo-text">Voytec<span class="highlight">U</span></span>
                 <span class="badge">AUTONOMOUS OS</span>
             </div>
-            <nav class="nav-links">
+            <nav class="nav-links" aria-label="Primary navigation"><a class="primary-nav-link" href="origin.html">ORIGIN</a><a class="primary-nav-link" href="agents.html">AGENTS</a><a class="primary-nav-link" href="world-peace-raport.html">WORLD PEACE</a>
                 <div class="status-pill"><span class="status-dot"></span><span class="status-text">SYSTEM OPERATIONAL</span></div>
             </nav>
         </header>
@@ -101,13 +101,13 @@
                     <article class="metadata-card wide"><div class="metadata-label"><i data-lucide="radio"></i> connection telemetry</div><div class="metadata-value emphasis" id="meta-connection">—</div><div class="metadata-list"><div class="metadata-row"><span>effective type</span><span id="meta-effective">—</span></div><div class="metadata-row"><span>downlink</span><span id="meta-downlink">—</span></div><div class="metadata-row"><span>round trip</span><span id="meta-rtt">—</span></div><div class="metadata-row"><span>data saver</span><span id="meta-save">—</span></div></div></article>
                     <article class="metadata-card"><div class="metadata-label"><i data-lucide="shield-check"></i> capability surface</div><div class="metadata-value emphasis" id="meta-capabilities">—</div><div class="metadata-tags" id="meta-tags"></div></article>
                     <article class="metadata-card wide"><div class="metadata-label"><i data-lucide="fingerprint"></i> runtime signature</div><div class="metadata-value small" id="meta-ua">—</div><div class="metadata-list"><div class="metadata-row"><span>platform</span><span id="meta-platform">—</span></div><div class="metadata-row"><span>vendor</span><span id="meta-vendor">—</span></div><div class="metadata-row"><span>cookies</span><span id="meta-cookies">—</span></div><div class="metadata-row"><span>referrer</span><span id="meta-referrer">—</span></div></div></article>
-                    <article class="metadata-card"><div class="metadata-label"><i data-lucide="activity"></i> entropy indicators</div><div class="metadata-value emphasis" id="meta-entropy-count">— signals</div><div class="metadata-meter"><span id="meta-entropy-meter"></span></div><div class="metadata-note">More exposed signals can make a browser easier to distinguish. <strong>Fingerprint ≠ identity.</strong></div></article>
+                    <article class="metadata-card"><div class="metadata-label"><i data-lucide="activity"></i> entropy indicators</div><div class="metadata-value emphasis" id="meta-entropy-count">— signals</div><div class="metadata-meter"><span id="meta-entropy-meter"></span></div><div class="metadata-note">This is an approximate count of browser-exposed capabilities, not a measured fingerprint score. <strong>Fingerprint ≠ identity.</strong> Nothing here is sent to a server.</div></article>
                     <article class="metadata-card wide"><div class="metadata-label"><i data-lucide="database-zap"></i> storage & permissions</div><div class="metadata-value small" id="meta-storage">—</div><div class="metadata-tags" id="meta-permissions"></div></article>
                 </div>
             </section>
         </main>
 
-        <footer class="site-footer"><p>&copy; 2026 VoytecU. All autonomous operations reserved.</p><div><a href="ollama_metrics_compare.html" class="footer-discreet-link" style="font-size:0.75rem;color:#888;opacity:0.6;text-decoration:none;">ollama metrics // compare</a> <span style="color:#444;">·</span> <a href="origin.html" class="footer-discreet-link" style="font-size:0.75rem;color:#888;opacity:0.6;text-decoration:none;">origin // genesis note</a></div><div class="footer-meta"><span>ENCRYPTED PROTOCOL</span> • <span>LATENCY: 1.2ms</span></div></footer>
+        <footer class="site-footer"><p>&copy; 2026 VoytecU. All autonomous operations reserved.</p><div><a href="ollama_metrics_compare.html" class="footer-discreet-link" style="font-size:0.75rem;color:#888;opacity:0.6;text-decoration:none;">ollama metrics // compare</a> <span style="color:#444;">·</span> <a href="origin.html" class="footer-discreet-link" style="font-size:0.75rem;color:#888;opacity:0.6;text-decoration:none;">origin // genesis note</a> <span style="color:#444;">·</span> <a href="world-peace-raport.html" class="footer-discreet-link" style="font-size:0.75rem;color:#888;opacity:0.6;text-decoration:none;">world peace // daily report</a></div><div class="footer-meta"><span>ENCRYPTED PROTOCOL</span> • <span>LATENCY: 1.2ms</span></div></footer>
     </div>
 
     <script src="script.js"></script>
