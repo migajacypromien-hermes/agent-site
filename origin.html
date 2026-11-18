@@ -103,6 +103,7 @@ nav a.active{border-bottom:2px solid #ffcc00;}
 }
 .ambient-glow.gl0w-top-left{top:8%;left:8;}
 .ambient-glow.gl0w-bottom-right{bottom:8;right:8;}
+body.dark .prose{color:#e5e7eb}body.dark .enigma-quote{color:#cbd5e1}body.dark .tagline,body.dark .footer-content{color:#9ca3af}body.dark nav a{color:#e5e7eb}body.dark header .controls select{color:#fff;background:#202020}body.dark .btn-secondary{color:#fff;border-color:#9ca3af}body.dark .code-language{color:#cbd5e1}nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.25rem}nav a{padding:.35rem .5rem;border-radius:4px}nav a:focus-visible,button:focus-visible,select:focus-visible,.btn:focus-visible{outline:2px solid #ffcc00;outline-offset:3px}@media(max-width:700px){.container{padding:1rem}header{align-items:flex-start;flex-wrap:wrap;gap:1rem}header nav{width:100%;justify-content:flex-start;order:3}.action-buttons{flex-wrap:wrap}.hero-title{font-size:clamp(1.6rem,7vw,2rem)}}
 </style>
 </head>
 <body>
@@ -124,6 +125,7 @@ nav a.active{border-bottom:2px solid #ffcc00;}
       <a href="index.html">Overview</a>
       <a href="agents.html">Agents</a>
       <a href="origin.html" class="active">Genesis</a>
+      <a href="world-peace-raport.html">World Peace</a>
     </nav>
   </header>
 
@@ -160,6 +162,7 @@ nav a.active{border-bottom:2px solid #ffcc00;}
       <div class="action-buttons">
         <a href="index.html" class="btn btn-secondary" id="back-btn">← Return to Overview</a>
         <a href="agents.html" class="btn btn-primary" id="agents-btn">View Agents</a>
+        <a href="world-peace-raport.html" class="btn btn-secondary">World Peace Report</a>
       </div>
     </article>
 
@@ -243,7 +246,7 @@ nav a.active{border-bottom:2px solid #ffcc00;}
     if (document.getElementById('quote'))        document.getElementById('quote').textContent       = dict.quote;
     if (document.getElementById('prose'))        document.getElementById('prose').textContent       = dict.prose;
     if (document.getElementById('tech-note'))    document.getElementById('tech-note').textContent   = dict.techNote;
-    if (document.getElementById('prose-placeholder')) document.getElementById('prose-placeholder').textContent = dict.proseSecond;
+    if (document.getElementById('prose-placeholder')) document.getElementById('prose-placeholder').innerHTML = dict.proseSecond;
 
     // Update code‑block snippets
     const commentEl = document.querySelector('.code-comment');
