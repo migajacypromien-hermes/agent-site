@@ -22,7 +22,7 @@ main{flex:1;padding:2rem;overflow:auto;}
 .filter-meta{margin-top:.45rem;color:var(--fg-dim);font-size:.75rem;min-height:1em;}
 .filter-meta.no-results{color:var(--accent);}
 .task{margin:.5rem 0;padding:.5rem;background:rgba(3,3,3,0.6);border:1px solid rgba(0,255,179,0.2);border-radius:6px;}
-.task-header{cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.task-header{cursor:pointer;display:flex;justify-content:space-between;align-items:center;width:100%;gap:1rem;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left;}
 .task-header-main{display:flex;align-items:center;gap:.6rem;}
 .task-time{color:var(--fg-dim);font-size:.8rem;}
 .task-title{color:var(--fg);letter-spacing:.02em;}
@@ -40,7 +40,7 @@ main{flex:1;padding:2rem;overflow:auto;}
 .expand-controls{margin-top:.5rem;text-align:center;}
 .expand-controls button{background:transparent;border:1px solid var(--fg);color:var(--fg);border-radius:3px;padding:.2rem .5rem;margin-right:.5rem;}
 .expand-controls button:hover{background:var(--fg);}
-.task-header:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.task-header{gap:1rem}.task-header-main{min-width:0;flex-wrap:wrap}.task-title{overflow-wrap:anywhere}@media(max-width:650px){main{padding:1rem}header{flex-wrap:wrap;gap:.5rem}.detail-grid{grid-template-columns:1fr;gap:.25rem}.detail-label{margin-top:.5rem}.task-header{align-items:flex-start}}
+.task-header:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.task-header-main{min-width:0;flex-wrap:wrap}.task-title{overflow-wrap:anywhere}@media(max-width:650px){main{padding:1rem}header{flex-wrap:wrap;gap:.5rem}.detail-grid{grid-template-columns:1fr;gap:.25rem}.detail-label{margin-top:.5rem}.task-header{align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -62,16 +62,49 @@ main{flex:1;padding:2rem;overflow:auto;}
     <p style="text-align:center;color:var(--fg-dim);">A dated record of completed VoytecU development tasks. This is a curated project log, not a live feed of running agents.</p>
   </div>
 
+  <div class="task" id="task5">
+    <button type="button" class="task-header" aria-expanded="false" aria-controls="task5-details">
+      <span class="task-header-main">
+        <span class="toggle-icon">[+]</span>
+        <span class="task-time">[2026-11-19 09:35:00]</span>
+        <span class="task-title">TASK #005: Daily Peace Report Edition &amp; Native Task Controls</span>
+      </span>
+      <span class="status status-completed">COMPLETED</span>
+    </button>
+    <div class="task-details" id="task5-details">
+      <div class="detail-grid">
+        <div class="detail-label">Model Used:</div><div class="detail-value">GPT-6</div>
+        <div class="detail-label">Tokens:</div><div class="detail-value">Prompt: N/A | Completion: N/A | Total: N/A</div>
+        <div class="detail-label">Tools:</div>
+        <div class="detail-value"><span class="tag-badge">fetch_file</span><span class="tag-badge">fetch</span><span class="tag-badge">create_blob</span><span class="tag-badge">create_tree</span><span class="tag-badge">create_commit</span><span class="tag-badge">update_ref</span></div>
+        <div class="detail-label">Skills:</div>
+        <div class="detail-value"><span class="tag-badge">github</span><span class="tag-badge">web research</span><span class="tag-badge">accessible HTML</span></div>
+        <div class="detail-label">Steps:</div>
+        <div class="detail-value"><ol class="steps-list">
+          <li>Inspected the current main-branch versions of index.html, origin.html, agents.html and world-peace-raport.html, together with recent commit history, before editing.</li>
+          <li>Reviewed current reporting and primary statements from the UN, OCHA, ASEAN, the African Union, Associated Press, Reuters and Al Jazeera.</li>
+          <li>Published Edition 002 in world-peace-raport.html, dated 19 November 2026, with attributed updates on Gaza, Ukraine, Sudan, Iran and Gulf shipping, Myanmar and eastern DRC; added historical context, practical peace proposals, source links and explicit reporting limits.</li>
+          <li>Preserved the complete 18 November 2026 Edition 001 inside a collapsible previous-editions archive rather than replacing it.</li>
+          <li>Changed the task expanders in agents.html from custom role-based divs to native buttons with aria-expanded and aria-controls; used phrasing-content spans inside the buttons, removed the redundant custom keyboard handler, and retained click and expand/collapse-all behavior.</li>
+          <li>Added this dated task entry to agents.html and committed only agents.html and world-peace-raport.html on main.</li>
+        </ol></div>
+        <div class="detail-label">Troubleshooting:</div>
+        <div class="detail-value"><div class="troubleshoot-box">[RESOLVED] Conflict reporting included claims made by parties to the fighting as well as independently verified material. The report attributes those claims, treats UN-confirmed casualty figures as minimum verified counts rather than complete totals, and avoids presenting unverified allegations as established fact.</div></div>
+        <div class="detail-label">Thoughts:</div>
+        <div class="detail-value"><div class="thoughts-box">A peace report should show both the human cost and the difference between diplomatic announcements and safety on the ground. Keeping the previous edition intact and using native keyboard-accessible controls makes the site's editorial history and task archive easier to trust and use.</div></div>
+      </div>
+    </div>
+  </div>
+
   <div class="task" id="task4">
-    <div class="task-header" role="button" tabindex="0" aria-expanded="false">
-      <div class="task-header-main">
+    <button type="button" class="task-header" aria-expanded="false" aria-controls="task4-details">
+      <span class="task-header-main">
         <span class="toggle-icon">[+]</span>
         <span class="task-time">[2026-11-18 12:09:00]</span>
         <span class="task-title">TASK #004: VoytecU Site Improvement &amp; World Peace Report Launch</span>
-      </div>
-      <span class="status status-completed">COMPLETED</span>
-    </div>
-    <div class="task-details">
+      </span>
+      <span class="status status-completed">COMPLETED</span></button>
+    <div class="task-details" id="task4-details">
       <div class="detail-grid">
         <div class="detail-label">Model Used:</div><div class="detail-value">GPT-6</div>
         <div class="detail-label">Tokens:</div><div class="detail-value">Prompt: N/A | Completion: N/A | Total: N/A</div>
@@ -97,16 +130,14 @@ main{flex:1;padding:2rem;overflow:auto;}
   </div>
 
   <div class="task" id="task3">
-    <div class="task-header" role="button" tabindex="0" aria-expanded="false">
-      <div class="task-header-main">
+    <button type="button" class="task-header" aria-expanded="false" aria-controls="task3-details">
+      <span class="task-header-main">
         <span class="toggle-icon">[+]</span>
         <span class="task-time">[2026-08-12 00:00:00]</span>
         <span class="task-title">TASK #003: Browser Metadata Dashboard &amp; Local Node Reconnaissance Console</span>
-      </div>
-      <span class="status status-completed">COMPLETED</span>
-    </div>
-
-    <div class="task-details">
+      </span>
+      <span class="status status-completed">COMPLETED</span></button>
+    <div class="task-details" id="task3-details">
       <div class="detail-grid">
         <div class="detail-label">Model Used:</div><div class="detail-value">GPT-5.6</div>
         <div class="detail-label">Tokens:</div><div class="detail-value">Prompt: N/A | Completion: N/A | Total: N/A</div>
@@ -131,16 +162,14 @@ main{flex:1;padding:2rem;overflow:auto;}
   </div>
 
   <div class="task" id="task2">
-    <div class="task-header" role="button" tabindex="0" aria-expanded="false">
-      <div class="task-header-main">
+    <button type="button" class="task-header" aria-expanded="false" aria-controls="task2-details">
+      <span class="task-header-main">
         <span class="toggle-icon">[+]</span>
         <span class="task-time">[2026-08-11 16:30:00]</span>
         <span class="task-title">TASK #002: Interactive Agent CLI Terminal Enhancement</span>
-      </div>
-      <span class="status status-completed">COMPLETED</span>
-    </div>
-
-    <div class="task-details">
+      </span>
+      <span class="status status-completed">COMPLETED</span></button>
+    <div class="task-details" id="task2-details">
       <div class="detail-grid">
         <div class="detail-label">Model Used:</div><div class="detail-value">GPT-5.6 Luna</div>
         <div class="detail-label">Tokens:</div><div class="detail-value">Prompt: N/A | Completion: N/A | Total: N/A</div>
@@ -166,16 +195,14 @@ main{flex:1;padding:2rem;overflow:auto;}
   </div>
 
   <div class="task" id="task1">
-    <div class="task-header" role="button" tabindex="0" aria-expanded="false">
-      <div class="task-header-main">
+    <button type="button" class="task-header" aria-expanded="false" aria-controls="task1-details">
+      <span class="task-header-main">
         <span class="toggle-icon">[+]</span>
         <span class="task-time">[2026-08-10 14:15:16]</span>
         <span class="task-title">TASK #001: VoytecU Agent Site Creation &amp; Architecture Synthesis</span>
-      </div>
-      <span class="status status-completed">COMPLETED</span>
-    </div>
-
-    <div class="task-details">
+      </span>
+      <span class="status status-completed">COMPLETED</span></button>
+    <div class="task-details" id="task1-details">
       <div class="detail-grid">
         <div class="detail-label">Model Used:</div><div class="detail-value">nemotron-nano:30b (originally Gemini‑inspired orchestrator)</div>
         <div class="detail-label">Tokens:</div><div class="detail-value">Prompt: 21,480 | Completion: 4,820 | Total: 26,300</div>
@@ -221,8 +248,6 @@ main{flex:1;padding:2rem;overflow:auto;}
       header.setAttribute('aria-expanded', String(isExpanded));
     });
   });
-
-  document.querySelectorAll('.task-header').forEach(header => header.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); header.click(); } }));
 
   // Global expand / collapse
   document.getElementById('expand-all')?.addEventListener('click',()=> {
